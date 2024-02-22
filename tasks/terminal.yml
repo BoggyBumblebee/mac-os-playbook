@@ -8,21 +8,21 @@
 
 - name: Ensure custom Terminal profile is added.
   copy:
-    src: files/terminal/JJG-Term.terminal
-    dest: /tmp/JJG-Term.terminal
+    src: files/terminal/Terminal-Pro.terminal
+    dest: /tmp/Terminal-Pro.terminal
   changed_when: false
-  when: "'JJG-Term' not in terminal_theme.stdout"
+  when: "'Terminal-Pro' not in terminal_theme.stdout"
 
 - name: Ensure custom Terminal profile is added.
-  command: open /tmp/JJG-Term.terminal
+  command: open /tmp/Terminal-Pro.terminal
   changed_when: false
-  when: "'JJG-Term' not in terminal_theme.stdout"
+  when: "'Terminal-Pro' not in terminal_theme.stdout"
 
 # TODO: This doesn't work in Yosemite. Consider a different solution?
 - name: Ensure custom Terminal profile is set as default.
   command: "{{ item }}"
   with_items:
-    - defaults write com.apple.terminal 'Default Window Settings' -string JJG-Term
-    - defaults write com.apple.terminal 'Startup Window Settings' -string JJG-Term
+    - defaults write com.apple.terminal 'Default Window Settings' -string Terminal-Pro
+    - defaults write com.apple.terminal 'Startup Window Settings' -string Terminal-Pro
   changed_when: false
-  when: "'JJG-Term' not in terminal_theme.stdout"
+  when: "'Terminal-Pro' not in terminal_theme.stdout"
