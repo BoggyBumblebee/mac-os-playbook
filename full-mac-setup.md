@@ -1,4 +1,4 @@
-# Full Mac Setup Process (for Jeff Geerling)
+# Full Mac Setup Process (for Christopher Marsh-Bourdon)
 
 There are some things in life that just can't be automated... or aren't 100% worth the time :(
 
@@ -19,9 +19,13 @@ Before starting, I completed Apple's mandatory macOS setup wizard (creating a lo
     - Open Photos and make sure iCloud sync options are correct
     - Open Music, make sure computer is authorized, and set Library sync options
   - Install old-fashioned apps:
-    - Install Microsoft Office from Office365
-    - Install Adobe Acrobat Reader from Creative Cloud
-    - Install JetBrains Toolbox and the following IDEs within it...
+    - Install Blackmagic Tools...
+      - Media Express
+      - Desktop Video Setup
+      - LiveKey
+    - Sign into Microsft 365 for Office to Work
+    - Sign into Adobe Creative Cloud for Adobe Acrobat to work
+    - Sign into JetBrains Toolbox and install...
       - DataGrip
       - Fleet
       - GoLand
@@ -30,11 +34,6 @@ Before starting, I completed Apple's mandatory macOS setup wizard (creating a lo
       - RubyMine
       - RustRover
       - WebStorm
-    - Install Blackmagic Tools...
-      - Media Express
-      - Desktop Video Setup
-      - LiveKey
-  - Symlink the synchronized `config.yml` into the playbook dir: `ln -s /Users/cmb/Dropbox/Apps/Config/mac-dev-playbook/config.yml /Users/cmb/Development/mac-dev-playbook/config.yml`
   - These things might be automatable, but I do them manually right now:
     - Configure Time Machine backup drive and [Time Machine Editor](https://tclementdev.com/timemachineeditor/) (if needed)
 
@@ -45,12 +44,3 @@ The following tasks have to wait for the initial Dropbox sync to complete before
 ```
 # SSH setup.
 ssh-keygen  # and create a default key to set up .ssh folder
-
-# Vim setup.
-mkdir -p ~/.vim/autoload
-mkdir -p ~/.vim/bundle
-cd ~/.vim/autoload
-curl https://raw.githubusercontent.com/tpope/vim-pathogen/master/autoload/pathogen.vim > pathogen.vim
-cd ~/.vim/bundle
-git clone git://github.com/scrooloose/nerdtree.git
-```
