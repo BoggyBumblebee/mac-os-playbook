@@ -35,7 +35,7 @@ Before starting, I completed Apple's mandatory macOS setup wizard (creating a lo
       - RustRover
       - WebStorm
   - These things might be automatable, but I do them manually right now:
-    - Configure Time Machine backup drive and [Time Machine Editor](https://tclementdev.com/timemachineeditor/) (if needed)
+    - Configure Time Machine backup drive 
 
 ## To Wrap in Post-provision automation
 
