@@ -1,16 +1,251 @@
 ---
-homebrew_installed_packages:
-  - autoconf
-  - bash-completion
-  - gettext
-  - sqlite
-  - ssh-copy-id
-  - cowsay
-  - readline
-  - pv
-  - wget
-  - wrk
+downloads: ~/.ansible-downloads/
 
+configure_dotfiles: true
+configure_terminal: true
+configure_osx: true
+
+# Set to 'true' to configure the Dock via dockutil.
+configure_dock: true
+dockitems_remove:
+  - Launchpad
+  - Maps
+  - Freeform
+  - News
+  - Podcasts
+  - 'App Store'
+
+dockitems_persist:
+  - name: "Mail"
+    path: "/Applications/Mail.app/"
+    pos: 1
+  - name: "Safari"
+    path: "/Applications/Safari.app/"    
+    pos: 2
+  - name: "Safari"        
+    path: "/Applications/Safari.app/"
+    pos: 3
+  - name: "Calendar"        
+    path: "/Applications/Calendar.app/"
+    pos: 4
+  - name: "Contacts"        
+    path: "/Applications/Contacts.app/"
+    pos: 5
+  - name: "Notes"
+    path: "/Applications/Notes.app/"
+    pos: 6
+  - name: "Reminders"        
+    path: "/Applications/Messages.app/"
+    pos: 7
+  - name: "Messages"        
+    path: "/Applications/Messages.app/"
+    pos: 8
+  - name: "reMarkable"
+    path: "/Applications/reMarkable.app/"
+    pos: 9
+  - name: "FaceTime"        
+    path: "/Applications/FaceTime.app/"
+    pos: 10    
+  - name: "WhatsApp"
+    path: "/Applications/WhatsApp.app/"
+    pos: 11 
+  - name: "Slack"
+    path: "/Applications/Slack.app/"
+    pos: 12
+  - name: "IntelliJ IDEA Ultimate"        
+    path: "/Users/cmb/Applications/IntelliJ IDEA Ultimate.app/"
+    pos: 13
+  - name: "GoLand"
+    path: "/Users/cmb/Applications/GoLand.app/"
+    pos: 14
+  - name: "PyCharm Professional Edition"
+    path: "/Users/cmb/Applications/PyCharm Professional Edition.app/"
+    pos: 15
+  - name: "Postman"
+    path: "/Applications/Postman.app/"
+    pos: 16
+  - name: "BBEdit"
+    path: "/Applications/BBEdit.app/"
+    pos: 17
+  - name: "Sublime Text"
+    path: "/Applications/Sublime Text.app/"
+    pos: 18
+  - name: "Parallels Desktop"
+    path: "/Applications/Parallels Desktop.app/"
+    pos: 19
+  - name: "Music"
+    path: "/Applications/Music.app/"
+    pos: 20
+  - name: "TV"
+    path: "/Applications/TV.app/"
+    pos: 21
+  - name: "Adobe Lightroom Classic"
+    path: "/Applications/Adobe Lightroom Classic/Adobe Lightroom Classic.app/"
+    pos: 22
+  - name: "Photos"
+    path: "/Applications/Photos.app/"
+    pos: 23
+  - name: "Microsoft Excel"
+    path: "/Applications/Microsoft Excel.app/"
+    pos: 24
+  - name: "Adobe Acrobat"
+    path: "/Applications/Adobe Acrobat DC/Adobe Acrobat.app/"
+    pos: 25
+  - name: "Passwords"
+    path: "/Applications/Passwords.app/"
+    pos: 26
+  - name: "iStatistica Pro"
+    path: "/Applications/iStatistica Pro.app/"
+    pos: 27
+  - name: "Activity Monitor"
+    path: "/Applications/Utilities/Activity Monitor.app/"
+    pos: 28    
+  - name: "Terminal"
+    path: "/Applications/Utilities/Terminal.app/"
+    pos: 29
+  - name: "System Settings"
+    path: "/Applications/System Settings.app/"
+    pos: 30
+
+configure_sudoers: false
+sudoers_custom_config: ''
+# Example:
+# sudoers_custom_config: |
+#   # Allow users in admin group to use sudo with no password.
+#   %admin ALL=(ALL) NOPASSWD: ALL
+
+dotfiles_repo: https://github.com/boggybumblebee/dotfiles.git
+dotfiles_repo_accept_hostkey: true
+dotfiles_repo_local_destination: ~/workspace/github.com/boggybumblebee/dotfiles
+dotfiles_files:
+  - .zshrc
+  - .gitignore
+  - .inputrc
+  - .osx
+  - .vimrc
+
+homebrew_installed_packages:
+  - bash-completion
+  - git
+  - go
+  - golang-migrate
+  - goreleaser
+  - htop
+  - make
+  - mas
+  - node
+  - nvm
+  - thefuck
+  - tree
+  - vim
+  - wget
+  - wifi-password
+  - zsh-history-substring-search
+
+homebrew_taps: []
+
+homebrew_cask_appdir: /Applications
 homebrew_cask_apps:
+  - bbedit
   - firefox
-  - licecap
+  - handbrake
+  - jetbrains-toolbox
+  - launchpad-manager
+  - mosaic
+  - onyx
+  - paragon-ntfs
+  - postman
+  - sublime-text
+  - transmit
+  - vlc
+
+# See `geerlingguy.mas` role documentation for usage instructions.
+mas_installed_apps:
+  - { id: 557468553, name: "Bluetooth Explorer" }
+  - { id: 1150771803, name: "Countdown Timer Plus" }
+  - { id: 640199958, name: "Developer" }
+  - { id: 549083868, name: "Display Menu" }
+  - { id: 937759555, name: "Elmedia Player" }
+  - { id: 1298486723, name: "FileZilla Pro" }
+  - { id: 424389933, name: "Final Cut Pro" }
+  - { id: 1460836908, name: "GoPro Player" }
+  - { id: 1470872890, name: "Hacker Pad" }
+  - { id: 1342896380, name: "Hex Fiend" }
+  - { id: 439697913, name: "Icon Slate" }
+  - { id: 992115977, name: "Image2icon" }
+  - { id: 1447778660, name: "iStatistica Pro" }
+  - { id: 489094439, name: "iTeleport" }
+  - { id: 302584613, name: "Kindle" }
+  - { id: 1438838068, name: "KubeContext" }
+  - { id: 634148309, name: "Logic Pro" }
+  - { id: 1240063289, name: "Magic Battery" }
+  - { id: 714196447, name: "MenuBar Stats" }
+  - { id: 954885838, name: "Mixed In Key 8" }
+  - { id: 434290957, name: "Motion" }
+  - { id: 905953485, name: "NordVPN" }
+  - { id: 955864065, name: "Nutshell" }
+  - { id: 1142578753, name: "OmniGraffle" }
+  - { id: 882812218, name: "Owly" }
+  - { id: 405219581, name: "PDF Toolkit" }
+  - { id: 963504129, name: "Pommie" }
+  - { id: 402990477, name: "PwGenerator" }
+  - { id: 1276493162, name: "reMarkable" } 
+  - { id: 409907375, name: "Remote Desktop" }
+  - { id: 568020055, name: "Scapple" }
+  - { id: 1310686187, name: "Scrivener 3" }
+  - { id: 803453959, name: "Slack" }
+  - { id: 1006087419, name: "SnippetsLab" }
+  - { id: 1153157709, name: "Speedtest" }
+  - { id: 1378587993, name: "SQLiteFlow" }
+  - { id: 808583119, name: "To MP3 Converter" }
+  - { id: 1191449274, name: "ToothFairy" }
+  - { id: 1500180529, name: "UPS Power Monitor" }
+  - { id: 994556965, name: "vCardConverter for Excel" }
+  - { id: 959485650, name: "Vector Icon Box" }
+  - { id: 1147396723, name: "WhatsApp" }
+  - { id: 494803304, name: "WiFi Explorer" }
+  - { id: 858446756, name: "World Clock Pro" }
+  - { id: 497799835, name: "Xcode" }
+
+osx_script: "~/.osx"
+
+# Install packages from other package managers.
+# Note: You are responsible for making sure the required package managers are
+# installed, eg. through homebrew.
+composer_packages: []
+# - name: drush
+#   state: present # present/absent, default: present
+#   version: "^8.1" # default: N/A
+gem_packages: []
+# - name: bundler
+#   state: present # present/absent/latest, default: present
+#   version: "~> 1.15.1" # default: N/A
+npm_packages: []
+# - name: webpack
+#   state: present # present/absent/latest, default: present
+#   version: "^2.6" # default: N/A
+pip_packages: []
+# - name: mkdocs
+#   state: present # present/absent/latest, default: present
+#   version: "0.16.3" # default: N/A
+
+# Set to 'true' to configure Sublime Text.
+configure_sublime: false
+sublime_base_path: '~/Library/Application Support/Sublime Text'
+sublime_config_path: "Packages/User"
+sublime_package_control:
+  - "DocBlockr"
+  - "Dockerfile Syntax Highlighting"
+  - "FileDiffs"
+  - "GitHub Flavored Markdown Preview"
+  - "Jinja2"
+  - "Package Control"
+  - "PHP-Twig"
+  - "Pretty JSON"
+  - "SublimeLinter"
+  - "SublimeLinter-contrib-yamllint"
+  - "TrailingSpaces"
+  - "WordCount"
+
+# Glob pattern to ansible task files to run after all other tasks are finished.
+post_provision_tasks: []
