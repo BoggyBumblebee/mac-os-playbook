@@ -73,42 +73,24 @@ dockitems_persist:
   - name: "Sublime Text"
     path: "/Applications/Sublime Text.app/"
     pos: 19
-  - name: "Parallels Desktop"
-    path: "/Applications/Parallels Desktop.app/"
-    pos: 20
   - name: "Music"
     path: "/Applications/Music.app/"
-    pos: 21
-  - name: "TV"
-    path: "/Applications/TV.app/"
-    pos: 22
-  - name: "Adobe Lightroom Classic"
-    path: "/Applications/Adobe Lightroom Classic/Adobe Lightroom Classic.app/"
-    pos: 23
-  - name: "Photos"
-    path: "/Applications/Photos.app/"
-    pos: 24
-  - name: "Microsoft Excel"
-    path: "/Applications/Microsoft Excel.app/"
-    pos: 25
-  - name: "Adobe Acrobat"
-    path: "/Applications/Adobe Acrobat DC/Adobe Acrobat.app/"
-    pos: 26
+    pos: 20
   - name: "Passwords"
     path: "/Applications/Passwords.app/"
-    pos: 27
+    pos: 21
   - name: "iStatistica Pro"
     path: "/Applications/iStatistica Pro.app/"
-    pos: 28
+    pos: 22
   - name: "Activity Monitor"
     path: "/Applications/Utilities/Activity Monitor.app/"
-    pos: 29    
+    pos: 23    
   - name: "Terminal"
     path: "/Applications/Utilities/Terminal.app/"
-    pos: 30
+    pos: 24
   - name: "System Settings"
     path: "/Applications/System Settings.app/"
-    pos: 31
+    pos: 25
 
 configure_sudoers: false
 sudoers_custom_config: ''
@@ -172,9 +154,7 @@ mas_installed_apps:
   - { id: 1150771803, name: "Countdown Timer Plus" }
   - { id: 640199958, name: "Developer" }
   - { id: 549083868, name: "Display Menu" }
-  - { id: 937759555, name: "Elmedia Player" }
   - { id: 1298486723, name: "FileZilla Pro" }
-  - { id: 424389933, name: "Final Cut Pro" }
   - { id: 1460836908, name: "GoPro Player" }
   - { id: 1470872890, name: "Hacker Pad" }
   - { id: 1342896380, name: "Hex Fiend" }
@@ -184,11 +164,8 @@ mas_installed_apps:
   - { id: 489094439, name: "iTeleport" }
   - { id: 302584613, name: "Kindle" }
   - { id: 1438838068, name: "KubeContext" }
-  - { id: 634148309, name: "Logic Pro" }
   - { id: 1240063289, name: "Magic Battery" }
   - { id: 714196447, name: "MenuBar Stats" }
-  - { id: 954885838, name: "Mixed In Key 8" }
-  - { id: 434290957, name: "Motion" }
   - { id: 905953485, name: "NordVPN" }
   - { id: 955864065, name: "Nutshell" }
   - { id: 882812218, name: "Owly" }
@@ -205,7 +182,6 @@ mas_installed_apps:
   - { id: 1378587993, name: "SQLiteFlow" }
   - { id: 1191449274, name: "ToothFairy" }
   - { id: 1500180529, name: "UPS Power Monitor" }
-  - { id: 994556965, name: "vCardConverter for Excel" }
   - { id: 959485650, name: "Vector Icon Box" }
   - { id: 1147396723, name: "WhatsApp" }
   - { id: 494803304, name: "WiFi Explorer" }
