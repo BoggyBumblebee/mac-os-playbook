@@ -200,7 +200,6 @@ mas_installed_apps:
   - { id: 1153157709, name: "Speedtest" }
   - { id: 1378587993, name: "SQLiteFlow" }
   - { id: 1191449274, name: "ToothFairy" }
-  - { id: 1500180529, name: "UPS Power Monitor" }
   - { id: 994556965, name: "vCardConverter for Excel" }
   - { id: 959485650, name: "Vector Icon Box" }
   - { id: 1147396723, name: "WhatsApp" }

@@ -150,7 +150,6 @@ mas_installed_apps:
   - { id: 640199958, name: "Developer" }
   - { id: 549083868, name: "Display Menu" }
   - { id: 1298486723, name: "FileZilla Pro" }
-  - { id: 1460836908, name: "GoPro Player" }
   - { id: 1470872890, name: "Hacker Pad" }
   - { id: 1342896380, name: "Hex Fiend" }
   - { id: 439697913, name: "Icon Slate" }
@@ -176,7 +175,6 @@ mas_installed_apps:
   - { id: 1153157709, name: "Speedtest" }
   - { id: 1378587993, name: "SQLiteFlow" }
   - { id: 1191449274, name: "ToothFairy" }
-  - { id: 1500180529, name: "UPS Power Monitor" }
   - { id: 959485650, name: "Vector Icon Box" }
   - { id: 1147396723, name: "WhatsApp" }
   - { id: 494803304, name: "WiFi Explorer" }
