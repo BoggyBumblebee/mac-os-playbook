@@ -111,7 +111,6 @@ dotfiles_files:
 
 homebrew_installed_packages:
   - bash-completion
-  - fn
   - git
   - go
   - golang-migrate
@@ -121,7 +120,6 @@ homebrew_installed_packages:
   - mas
   - node
   - nvm
-  - rustup
   - thefuck
   - tree
   - vim
@@ -134,17 +132,14 @@ homebrew_taps: []
 homebrew_cask_appdir: /Applications
 homebrew_cask_apps:
   - bbedit
-  - docker
   - firefox
   - handbrake
   - jetbrains-toolbox
   - launchpad-manager
-  - mosaic
   - onyx
   - paragon-ntfs
   - postman
   - sublime-text
-  - transmit
   - vlc
   - whatsapp
 
