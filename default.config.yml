@@ -55,7 +55,6 @@ homebrew_installed_packages:
   - php
   - pv
   - readline
-  - smartmontools
   - sqlite
   - ssh-copy-id
   - wget
