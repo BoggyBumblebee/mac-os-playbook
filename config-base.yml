@@ -128,13 +128,16 @@ dotfiles_files:
   - .vimrc
 
 homebrew_installed_packages:
+  - awscli
+  - aws-sam-cli
   - bash-completion
-  - fn
+  - cargo-lambda
   - git
   - go
   - golang-migrate
   - goreleaser
   - htop
+  - llvm
   - make
   - mas
   - node
@@ -147,7 +150,8 @@ homebrew_installed_packages:
   - wifi-password
   - zsh-history-substring-search
 
-homebrew_taps: []
+homebrew_taps: 
+  - cargo-lambda/cargo-lambda
 
 homebrew_cask_appdir: /Applications
 homebrew_cask_apps:

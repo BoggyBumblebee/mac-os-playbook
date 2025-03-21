@@ -48,16 +48,16 @@ homebrew_installed_packages:
   - httpie
   - iperf
   - libevent
-  - sqlite
   - nmap
   - node
   - nvm
-  - php
-  - ssh-copy-id
-  - cowsay
-  - readline
   - openssl
+  - php
   - pv
+  - readline
+  - smartmontools
+  - sqlite
+  - ssh-copy-id
   - wget
   - wrk
   - zsh-history-substring-search

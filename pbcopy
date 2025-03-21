@@ -61,54 +61,51 @@ dockitems_persist:
   - name: "PyCharm Professional Edition"
     path: "/Users/cmb/Applications/PyCharm Professional Edition.app/"
     pos: 15
-  - name: "RustRover"
-    path: "/Users/cmb/Applications/RustRover.app/"
-    pos: 16
   - name: "Postman"
     path: "/Applications/Postman.app/"
-    pos: 17
+    pos: 16
   - name: "BBEdit"
     path: "/Applications/BBEdit.app/"
-    pos: 18
+    pos: 17
   - name: "Sublime Text"
     path: "/Applications/Sublime Text.app/"
-    pos: 19
+    pos: 18
   - name: "Parallels Desktop"
     path: "/Applications/Parallels Desktop.app/"
-    pos: 20
+    pos: 19
   - name: "Music"
     path: "/Applications/Music.app/"
-    pos: 21
+    pos: 20
   - name: "TV"
     path: "/Applications/TV.app/"
-    pos: 22
+    pos: 21
   - name: "Adobe Lightroom Classic"
     path: "/Applications/Adobe Lightroom Classic/Adobe Lightroom Classic.app/"
-    pos: 23
+    pos: 22
   - name: "Photos"
     path: "/Applications/Photos.app/"
-    pos: 24
+    pos: 23
   - name: "Microsoft Excel"
     path: "/Applications/Microsoft Excel.app/"
-    pos: 25
+    pos: 24
   - name: "Adobe Acrobat"
     path: "/Applications/Adobe Acrobat DC/Adobe Acrobat.app/"
-    pos: 26
+    pos: 25
   - name: "Passwords"
     path: "/Applications/Passwords.app/"
-    pos: 27
+    pos: 26
   - name: "iStatistica Pro"
     path: "/Applications/iStatistica Pro.app/"
-    pos: 28
+    pos: 27
   - name: "Activity Monitor"
     path: "/Applications/Utilities/Activity Monitor.app/"
-    pos: 29    
+    pos: 28    
   - name: "Terminal"
     path: "/Applications/Utilities/Terminal.app/"
-    pos: 30
+    pos: 29
   - name: "System Settings"
     path: "/Applications/System Settings.app/"
-    pos: 31
+    pos: 30
 
 configure_sudoers: false
 sudoers_custom_config: ''
@@ -128,22 +125,16 @@ dotfiles_files:
   - .vimrc
 
 homebrew_installed_packages:
-  - awscli
-  - aws-sam-cli
   - bash-completion
-  - cargo-lambda
   - git
   - go
   - golang-migrate
   - goreleaser
   - htop
-  - llvm  
   - make
   - mas
   - node
   - nvm
-  - rustup
-  - smartmontools  
   - thefuck
   - tree
   - vim
@@ -151,13 +142,11 @@ homebrew_installed_packages:
   - wifi-password
   - zsh-history-substring-search
 
-homebrew_taps: 
-  - cargo-lambda/cargo-lambda
+homebrew_taps: []
 
 homebrew_cask_appdir: /Applications
 homebrew_cask_apps:
   - bbedit
-  - docker
   - firefox
   - handbrake
   - jetbrains-toolbox
@@ -169,7 +158,6 @@ homebrew_cask_apps:
   - sublime-text
   - transmit
   - vlc
-  - whatsapp
 
 # See `geerlingguy.mas` role documentation for usage instructions.
 mas_installed_apps:
@@ -196,6 +184,7 @@ mas_installed_apps:
   - { id: 434290957, name: "Motion" }
   - { id: 905953485, name: "NordVPN" }
   - { id: 955864065, name: "Nutshell" }
+  - { id: 1142578753, name: "OmniGraffle" }
   - { id: 882812218, name: "Owly" }
   - { id: 405219581, name: "PDF Toolkit" }
   - { id: 963504129, name: "Pommie" }
@@ -208,6 +197,7 @@ mas_installed_apps:
   - { id: 1006087419, name: "SnippetsLab" }
   - { id: 1153157709, name: "Speedtest" }
   - { id: 1378587993, name: "SQLiteFlow" }
+  - { id: 808583119, name: "To MP3 Converter" }
   - { id: 1191449274, name: "ToothFairy" }
   - { id: 1500180529, name: "UPS Power Monitor" }
   - { id: 994556965, name: "vCardConverter for Excel" }
