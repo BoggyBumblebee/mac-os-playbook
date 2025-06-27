@@ -128,23 +128,36 @@ dotfiles_files:
   - .vimrc
 
 homebrew_installed_packages:
-  - awscli
+  - ansible
   - aws-sam-cli
+  - awscli
   - bash-completion
   - cargo-lambda
+  - docker
+  - docker-completion
+  - docker-credential-helper
+  - dockutil
+  - doctl
+  - gh
   - git
   - go
   - golang-migrate
   - goreleaser
+  - helm
   - htop
-  - llvm
+  - jq
+  - kind
+  - kubernetes-cli
+  - libgit2
+  - lld
   - make
   - mas
   - node
   - nvm
   - rustup
-  - smartmonctools
+  - smartmontools
   - thefuck
+  - transmission-cli
   - tree
   - vim
   - wget
@@ -157,14 +170,27 @@ homebrew_taps:
 homebrew_cask_appdir: /Applications
 homebrew_cask_apps:
   - bbedit
+  - betterdisplay
+  - bettermouse
   - firefox
   - handbrake
+  - jdownloader
   - jetbrains-toolbox
   - launchpad-manager
+  - leapp
+  - logitune
+  - microsoft-auto-update
+  - microsoft-office
   - onyx
+  - pallotron-yubiswitch
   - paragon-ntfs
   - postman
+  - steam
   - sublime-text
+  - transmission
+  - transmit
+  - vagrant
+  - virtualbox
   - vlc
   - whatsapp
 
