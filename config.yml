@@ -129,6 +129,7 @@ dotfiles_files:
 
 homebrew_installed_packages:
   - ansible
+<<<<<<< HEAD
   - aws-sam-cli
   - awscli
   - bash-completion
@@ -138,6 +139,15 @@ homebrew_installed_packages:
   - docker-credential-helper
   - dockutil
   - doctl
+=======
+  - aws-sam
+  - awscli
+  - bash-completion
+  - bat
+  - docker
+  - docker-credential-helper
+  - dockutil
+>>>>>>> d6d89d7 (Updated config.yml for Apple Studio and MacBook rotation)
   - gh
   - git
   - go
@@ -146,9 +156,12 @@ homebrew_installed_packages:
   - helm
   - htop
   - jq
+<<<<<<< HEAD
   - kind
   - kubernetes-cli
   - libgit2
+=======
+>>>>>>> d6d89d7 (Updated config.yml for Apple Studio and MacBook rotation)
   - lld
   - make
   - mas
@@ -169,6 +182,7 @@ homebrew_taps:
 
 homebrew_cask_appdir: /Applications
 homebrew_cask_apps:
+  - anaconda
   - bbedit
   - betterdisplay
   - bettermouse
@@ -179,7 +193,10 @@ homebrew_cask_apps:
   - launchpad-manager
   - leapp
   - logitune
+<<<<<<< HEAD
   - microsoft-auto-update
+=======
+>>>>>>> d6d89d7 (Updated config.yml for Apple Studio and MacBook rotation)
   - microsoft-office
   - onyx
   - pallotron-yubiswitch
@@ -187,7 +204,10 @@ homebrew_cask_apps:
   - postman
   - steam
   - sublime-text
+<<<<<<< HEAD
   - transmission
+=======
+>>>>>>> d6d89d7 (Updated config.yml for Apple Studio and MacBook rotation)
   - transmit
   - vagrant
   - virtualbox
