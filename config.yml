@@ -14,6 +14,10 @@ dockitems_remove:
   - News
   - Podcasts
   - 'App Store'
+  - Keynote
+  - Numbers
+  - Pages
+  - GarageBand
 
 dockitems_persist:
   - name: "Mail"
@@ -58,8 +62,8 @@ dockitems_persist:
   - name: "GoLand"
     path: "/Users/cmb/Applications/GoLand.app/"
     pos: 14
-  - name: "PyCharm Professional Edition"
-    path: "/Users/cmb/Applications/PyCharm Professional Edition.app/"
+  - name: "PyCharm"
+    path: "/Users/cmb/Applications/PyCharm.app/"
     pos: 15
   - name: "RustRover"
     path: "/Users/cmb/Applications/RustRover.app/"
@@ -147,6 +151,7 @@ homebrew_installed_packages:
   - lld
   - make
   - mas
+  - minikube
   - node
   - nvm
   - rustup
@@ -164,6 +169,7 @@ homebrew_taps:
 
 homebrew_cask_appdir: /Applications
 homebrew_cask_apps:
+  - adobe-creative-cloud
   - anaconda
   - bbedit
   - betterdisplay
@@ -192,7 +198,6 @@ homebrew_cask_apps:
 
 # See `geerlingguy.mas` role documentation for usage instructions.
 mas_installed_apps:
-  - { id: 557468553, name: "Bluetooth Explorer" }
   - { id: 1150771803, name: "Countdown Timer Plus" }
   - { id: 640199958, name: "Developer" }
   - { id: 549083868, name: "Display Menu" }
@@ -200,23 +205,18 @@ mas_installed_apps:
   - { id: 1298486723, name: "FileZilla Pro" }
   - { id: 424389933, name: "Final Cut Pro" }
   - { id: 1460836908, name: "GoPro Player" }
-  - { id: 1470872890, name: "Hacker Pad" }
   - { id: 1342896380, name: "Hex Fiend" }
   - { id: 439697913, name: "Icon Slate" }
   - { id: 992115977, name: "Image2icon" }
   - { id: 1447778660, name: "iStatistica Pro" }
-  - { id: 489094439, name: "iTeleport" }
   - { id: 302584613, name: "Kindle" }
   - { id: 1438838068, name: "KubeContext" }
   - { id: 634148309, name: "Logic Pro" }
   - { id: 1240063289, name: "Magic Battery" }
   - { id: 714196447, name: "MenuBar Stats" }
-  - { id: 954885838, name: "Mixed In Key 8" }
   - { id: 434290957, name: "Motion" }
   - { id: 905953485, name: "NordVPN" }
-  - { id: 955864065, name: "Nutshell" }
   - { id: 882812218, name: "Owly" }
-  - { id: 405219581, name: "PDF Toolkit" }
   - { id: 963504129, name: "Pommie" }
   - { id: 402990477, name: "PwGenerator" }
   - { id: 1276493162, name: "reMarkable" } 
@@ -229,8 +229,6 @@ mas_installed_apps:
   - { id: 1378587993, name: "SQLiteFlow" }
   - { id: 1191449274, name: "ToothFairy" }
   - { id: 994556965, name: "vCardConverter for Excel" }
-  - { id: 959485650, name: "Vector Icon Box" }
-  - { id: 1147396723, name: "WhatsApp" }
   - { id: 494803304, name: "WiFi Explorer" }
   - { id: 858446756, name: "World Clock Pro" }
   - { id: 497799835, name: "Xcode" }
