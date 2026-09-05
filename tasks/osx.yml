@@ -1,10 +1,19 @@
 ---
 # TODO: Use sudo once .osx can be run via root with no user interaction.
+- name: Check whether macOS settings script exists.
+  stat:
+    path: "{{ osx_script | regex_replace('\\s.*$', '') }}"
+  register: osx_script_stat
+  changed_when: false
+  check_mode: false
+
 - name: Ensure macOS settings script is executable
   file:
-    dest: "{{ osx_script }}"
+    dest: "{{ osx_script | regex_replace('\\s.*$', '') }}"
     mode: a+x
+  when: osx_script_stat.stat.exists or not ansible_check_mode
 
 - name: Run .osx dotfiles.
   command: "{{ osx_script }}"
   changed_when: false
+  when: osx_script_stat.stat.exists or not ansible_check_mode

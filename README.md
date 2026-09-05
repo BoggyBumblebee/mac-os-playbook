@@ -183,7 +183,7 @@ scripts/clean-macos-vm.sh tart \
   --password admin
 ```
 
-By default the VM flow installs missing guest prerequisites, pre-seeds the configured dotfiles source checkout for check-mode validation, runs `ansible-galaxy`, a syntax check, and an Ansible check-mode pass with `--skip-tags mas,post`. The dry run does not link those dotfiles into the guest home folder; add `--real --idempotence` after the check-mode output looks safe:
+By default the VM flow installs missing guest prerequisites, pre-seeds the configured dotfiles source checkout for check-mode validation, runs `ansible-galaxy`, a syntax check, and an Ansible check-mode pass with `--skip-tags mas,post`. The dry run does not link those dotfiles into the guest home folder, so the `.osx` settings script is skipped until a real run creates the link; add `--real --idempotence` after the check-mode output looks safe:
 
 ```bash
 scripts/clean-macos-vm.sh tart --real --idempotence
