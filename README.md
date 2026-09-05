@@ -199,7 +199,7 @@ If a reused VM starts rejecting the default credentials, force a fresh clone wit
 scripts/clean-macos-vm.sh tart --vm mac-os-playbook-test --recreate
 ```
 
-By default the VM flow installs missing guest prerequisites, pre-seeds configured Homebrew taps and the dotfiles source checkout for check-mode validation, runs `ansible-galaxy`, a syntax check, and an Ansible check-mode pass with `--skip-tags mas,post`. The dry run does not link those dotfiles into the guest home folder, so the `.osx` settings script is skipped until a real run creates the link; add `--real --idempotence` after the check-mode output looks safe:
+By default the VM flow installs missing guest prerequisites, pre-seeds configured Homebrew taps and the dotfiles source checkout for check-mode validation, runs `ansible-galaxy`, a syntax check, and an Ansible check-mode pass with `--skip-tags mas,post`. The guest-side copy of `config.yml` excludes `openai/tools/tart` because Tart is host virtualization tooling and does not need to be installed inside Tart; override `PLAYBOOK_VM_EXCLUDED_HOMEBREW_PACKAGES` if you need a different comma-separated exclusion list. The dry run does not link those dotfiles into the guest home folder, so the `.osx` settings script is skipped until a real run creates the link; add `--real --idempotence` after the check-mode output looks safe:
 
 ```bash
 scripts/clean-macos-vm.sh tart --real --idempotence

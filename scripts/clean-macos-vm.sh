@@ -13,6 +13,9 @@ DEFAULT_TART_MEMORY="8192"
 DEFAULT_TART_DISK_SIZE="80"
 DEFAULT_SKIP_TAGS="mas,post"
 DEFAULT_GUEST_WORKDIR="mac-os-playbook-validation"
+DEFAULT_TART_SSH_ATTEMPTS="10"
+DEFAULT_TART_SSH_RETRY_DELAY="5"
+DEFAULT_VM_EXCLUDED_HOMEBREW_PACKAGES="openai/tools/tart"
 
 usage() {
   cat <<'USAGE'
@@ -45,7 +48,8 @@ Tart options:
 
 Environment overrides:
   TART_VM, TART_IMAGE, TART_USER, TART_PASS, TART_CPU, TART_MEMORY,
-  TART_DISK_SIZE, PLAYBOOK_SKIP_TAGS
+  TART_DISK_SIZE, PLAYBOOK_SKIP_TAGS, TART_SSH_ATTEMPTS,
+  TART_SSH_RETRY_DELAY, PLAYBOOK_VM_EXCLUDED_HOMEBREW_PACKAGES
 
 Notes:
   - Tart uses Apple's Virtualization.framework under the hood.
@@ -221,6 +225,48 @@ config_list_values() {
   ' "${config_file}"
 }
 
+prepare_vm_guest_config() {
+  local excluded_packages="${PLAYBOOK_VM_EXCLUDED_HOMEBREW_PACKAGES:-${DEFAULT_VM_EXCLUDED_HOMEBREW_PACKAGES}}"
+  local tmp_config
+
+  [[ -f config.yml ]] || return 0
+  [[ -n "${excluded_packages}" ]] || return 0
+
+  log "Excluding VM-incompatible Homebrew packages: ${excluded_packages}."
+  tmp_config="$(mktemp)"
+  awk -v excluded_csv="${excluded_packages}" '
+    BEGIN {
+      split(excluded_csv, items, ",")
+      for (i in items) {
+        item = items[i]
+        gsub(/^[[:space:]]+|[[:space:]]+$/, "", item)
+        if (item != "") {
+          excluded[item] = 1
+        }
+      }
+    }
+    /^homebrew_installed_packages:/ {
+      in_packages = 1
+      print
+      next
+    }
+    in_packages && /^[^[:space:]-]/ {
+      in_packages = 0
+    }
+    in_packages && /^[[:space:]]*-/ {
+      value = $0
+      sub(/^[[:space:]]*-[[:space:]]*/, "", value)
+      gsub(/^"|"$/, "", value)
+      gsub(/^'\''|'\''$/, "", value)
+      if (value in excluded) {
+        next
+      }
+    }
+    { print }
+  ' config.yml > "${tmp_config}"
+  mv "${tmp_config}" config.yml
+}
+
 expand_guest_path() {
   local path="$1"
   case "${path}" in
@@ -268,13 +314,17 @@ prepare_dotfiles_for_check_mode() {
 }
 
 prepare_homebrew_taps_for_check_mode() {
-  log "Pre-seeding Homebrew taps for check-mode validation."
+  log "Pre-seeding Homebrew taps for validation."
   while IFS= read -r tap; do
     [[ -n "${tap}" ]] || continue
     if brew tap | grep -Fxq "${tap}"; then
+      log "Trusting Homebrew tap ${tap}."
+      brew trust --tap "${tap}"
       continue
     fi
     brew tap "${tap}"
+    log "Trusting Homebrew tap ${tap}."
+    brew trust --tap "${tap}"
   done < <(config_list_values homebrew_taps)
 }
 
@@ -315,6 +365,7 @@ run_guest_validation() {
   [[ -f "${REPO_ROOT}/main.yml" ]] || die "Run guest validation from this repository checkout."
 
   ensure_guest_tools
+  prepare_vm_guest_config
 
   log "Installing Ansible Galaxy dependencies."
   ansible-galaxy install -r requirements.yml
@@ -412,14 +463,53 @@ tart_ssh() {
   local password="$2"
   local ip="$3"
   local ssh_options=()
+  local attempts="${TART_SSH_ATTEMPTS:-${DEFAULT_TART_SSH_ATTEMPTS}}"
+  local retry_delay="${TART_SSH_RETRY_DELAY:-${DEFAULT_TART_SSH_RETRY_DELAY}}"
+  local rc=0
   shift 3
   while IFS= read -r option; do
     ssh_options+=("${option}")
   done < <(tart_ssh_options)
 
-  sshpass -p "${password}" ssh \
-    "${ssh_options[@]}" \
-    "${user}@${ip}" "$@"
+  for attempt in $(seq 1 "${attempts}"); do
+    sshpass -p "${password}" ssh \
+      "${ssh_options[@]}" \
+      "${user}@${ip}" "$@" && return 0
+    rc=$?
+    if [[ "${rc}" -ne 255 || "${attempt}" -eq "${attempts}" ]]; then
+      return "${rc}"
+    fi
+    log "SSH transport failed; retrying ${user}@${ip} in ${retry_delay}s (${attempt}/${attempts})."
+    sleep "${retry_delay}"
+  done
+}
+
+tart_scp_to_guest() {
+  local user="$1"
+  local password="$2"
+  local ip="$3"
+  local source="$4"
+  local target="$5"
+  local ssh_options=()
+  local attempts="${TART_SSH_ATTEMPTS:-${DEFAULT_TART_SSH_ATTEMPTS}}"
+  local retry_delay="${TART_SSH_RETRY_DELAY:-${DEFAULT_TART_SSH_RETRY_DELAY}}"
+  local rc=0
+
+  while IFS= read -r option; do
+    ssh_options+=("${option}")
+  done < <(tart_ssh_options)
+
+  for attempt in $(seq 1 "${attempts}"); do
+    sshpass -p "${password}" scp \
+      "${ssh_options[@]}" \
+      "${source}" "${user}@${ip}:${target}" && return 0
+    rc=$?
+    if [[ "${rc}" -ne 255 || "${attempt}" -eq "${attempts}" ]]; then
+      return "${rc}"
+    fi
+    log "SCP transport failed; retrying ${user}@${ip} in ${retry_delay}s (${attempt}/${attempts})."
+    sleep "${retry_delay}"
+  done
 }
 
 tart_copy_repo_to_guest() {
@@ -440,13 +530,7 @@ tart_copy_repo_to_guest() {
     .
 
   tart_ssh "${user}" "${password}" "${ip}" "rm -rf '${guest_workdir}' && mkdir -p '${guest_workdir}'"
-  local ssh_options=()
-  while IFS= read -r option; do
-    ssh_options+=("${option}")
-  done < <(tart_ssh_options)
-  sshpass -p "${password}" scp \
-    "${ssh_options[@]}" \
-    "${archive}" "${user}@${ip}:/tmp/mac-os-playbook.tar.gz"
+  tart_scp_to_guest "${user}" "${password}" "${ip}" "${archive}" "/tmp/mac-os-playbook.tar.gz"
   tart_ssh "${user}" "${password}" "${ip}" "tar -xzf /tmp/mac-os-playbook.tar.gz -C '${guest_workdir}'"
   rm -f "${archive}"
 }
@@ -554,10 +638,11 @@ run_tart_validation() {
     if [[ "${TART_CLEANUP_KEEP_RUNNING:-false}" != true ]]; then
       log "Stopping Tart VM ${TART_CLEANUP_VM}."
       tart stop "${TART_CLEANUP_VM}" >/dev/null 2>&1 || true
+      wait "${TART_CLEANUP_PID}" >/dev/null 2>&1 || true
     else
       log "Leaving Tart VM ${TART_CLEANUP_VM} running."
+      disown "${TART_CLEANUP_PID}" >/dev/null 2>&1 || true
     fi
-    wait "${TART_CLEANUP_PID}" >/dev/null 2>&1 || true
   }
   trap cleanup EXIT
 
