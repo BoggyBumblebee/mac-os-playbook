@@ -72,6 +72,10 @@ have_command() {
 load_homebrew_environment() {
   local prefix
 
+  if have_command brew; then
+    return 0
+  fi
+
   for prefix in /opt/homebrew /usr/local; do
     if [[ -x "${prefix}/bin/brew" ]]; then
       eval "$("${prefix}/bin/brew" shellenv)"
@@ -156,6 +160,17 @@ ensure_guest_tools() {
   fi
 }
 
+run_ansible_playbook() {
+  local ask_become_pass="$1"
+  shift
+
+  if [[ "${ask_become_pass}" == true ]]; then
+    ansible-playbook "$@" --ask-become-pass
+  else
+    ansible-playbook "$@"
+  fi
+}
+
 run_guest_validation() {
   local real_run=false
   local idempotence=false
@@ -200,17 +215,12 @@ run_guest_validation() {
   log "Running syntax check."
   ansible-playbook main.yml --syntax-check
 
-  local become_args=()
-  if [[ "${ask_become_pass}" == true ]]; then
-    become_args+=(--ask-become-pass)
-  fi
-
   log "Running check-mode validation with --skip-tags ${skip_tags}."
-  ansible-playbook main.yml --check --diff "${become_args[@]}" --skip-tags "${skip_tags}"
+  run_ansible_playbook "${ask_become_pass}" main.yml --check --diff --skip-tags "${skip_tags}"
 
   if [[ "${real_run}" == true ]]; then
     log "Running real playbook pass with --skip-tags ${skip_tags}."
-    ansible-playbook main.yml "${become_args[@]}" --skip-tags "${skip_tags}"
+    run_ansible_playbook "${ask_become_pass}" main.yml --skip-tags "${skip_tags}"
   else
     log "Skipping real provision pass. Add --real after check-mode looks good."
   fi
@@ -221,7 +231,7 @@ run_guest_validation() {
     local idempotence_log
     idempotence_log="$(mktemp)"
     log "Running idempotence pass; expecting changed=0 and failed=0."
-    ansible-playbook main.yml "${become_args[@]}" --skip-tags "${skip_tags}" | tee "${idempotence_log}"
+    run_ansible_playbook "${ask_become_pass}" main.yml --skip-tags "${skip_tags}" | tee "${idempotence_log}"
     tail "${idempotence_log}" | grep -q 'changed=0.*failed=0' \
       || die "Idempotence check failed. Inspect ${idempotence_log} in the guest."
     log "Idempotence check passed."
