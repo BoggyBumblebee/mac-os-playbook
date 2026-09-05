@@ -522,15 +522,18 @@ run_tart_validation() {
   log "Starting Tart VM ${vm} in the background."
   tart run --no-graphics "${vm}" >/tmp/"${vm}".log 2>&1 &
   local tart_pid=$!
+  TART_CLEANUP_VM="${vm}"
+  TART_CLEANUP_PID="${tart_pid}"
+  TART_CLEANUP_KEEP_RUNNING="${keep_running}"
 
   cleanup() {
-    if [[ "${keep_running}" != true ]]; then
-      log "Stopping Tart VM ${vm}."
-      tart stop "${vm}" >/dev/null 2>&1 || true
+    if [[ "${TART_CLEANUP_KEEP_RUNNING:-false}" != true ]]; then
+      log "Stopping Tart VM ${TART_CLEANUP_VM}."
+      tart stop "${TART_CLEANUP_VM}" >/dev/null 2>&1 || true
     else
-      log "Leaving Tart VM ${vm} running."
+      log "Leaving Tart VM ${TART_CLEANUP_VM} running."
     fi
-    wait "${tart_pid}" >/dev/null 2>&1 || true
+    wait "${TART_CLEANUP_PID}" >/dev/null 2>&1 || true
   }
   trap cleanup EXIT
 
