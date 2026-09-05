@@ -1,0 +1,76 @@
+---
+- name: Set Homebrew trust helper path.
+  set_fact:
+    homebrew_trust_brew_path: "{{ homebrew_brew_bin_path | default(((ansible_machine == 'arm64') | ternary('/opt/homebrew/bin', '/usr/local/bin'))) }}/brew"
+
+- name: Check whether Homebrew is installed before tap trust.
+  stat:
+    path: "{{ homebrew_trust_brew_path }}"
+  register: homebrew_trust_brew_binary
+  changed_when: false
+  check_mode: false
+  become: false
+
+- name: Require Homebrew before trusting configured taps.
+  fail:
+    msg: >-
+      This configuration uses homebrew_taps, but Homebrew is not installed at
+      {{ homebrew_trust_brew_path }}. Install Homebrew before running this
+      playbook so configured taps can be trusted before package resolution.
+  when: not homebrew_trust_brew_binary.stat.exists
+
+- name: List currently tapped Homebrew taps.
+  command:
+    argv:
+      - "{{ homebrew_trust_brew_path }}"
+      - tap
+  register: homebrew_current_taps
+  changed_when: false
+  check_mode: false
+  become: false
+
+- name: Ensure configured Homebrew taps are available before trust.
+  command:
+    argv: "{{ [homebrew_trust_brew_path, 'tap', homebrew_trust_tap_name] + ([homebrew_trust_tap_url] if homebrew_trust_tap_url | length > 0 else []) }}"
+  loop: "{{ homebrew_taps }}"
+  loop_control:
+    label: "{{ homebrew_trust_tap_name }}"
+  vars:
+    homebrew_trust_tap_name: "{{ item.name | default(item) }}"
+    homebrew_trust_tap_url: "{{ item.url | default('') }}"
+  when: homebrew_trust_tap_name not in homebrew_current_taps.stdout_lines
+  changed_when: true
+  check_mode: false
+  become: false
+
+- name: List trusted Homebrew entries.
+  command:
+    argv:
+      - "{{ homebrew_trust_brew_path }}"
+      - trust
+      - --json=v1
+  register: homebrew_trust_entries
+  changed_when: false
+  check_mode: false
+  become: false
+
+- name: Set trusted Homebrew taps fact.
+  set_fact:
+    homebrew_trusted_taps: "{{ (homebrew_trust_entries.stdout | from_json).taps | default([]) }}"
+
+- name: Trust configured Homebrew taps.
+  command:
+    argv:
+      - "{{ homebrew_trust_brew_path }}"
+      - trust
+      - --tap
+      - "{{ homebrew_trust_tap_name }}"
+  loop: "{{ homebrew_taps }}"
+  loop_control:
+    label: "{{ homebrew_trust_tap_name }}"
+  vars:
+    homebrew_trust_tap_name: "{{ item.name | default(item) }}"
+  when: homebrew_trust_tap_name not in homebrew_trusted_taps
+  changed_when: true
+  check_mode: false
+  become: false

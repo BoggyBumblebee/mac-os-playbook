@@ -39,11 +39,14 @@ Install Homebrew, then make it available in the current shell:
 eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 
-Install the tools needed to run the playbook:
+Install the tool needed to run the playbook:
 
 ```bash
-brew install ansible git
+brew install ansible
 ```
+
+The playbook pre-taps and trusts configured `homebrew_taps` before installing
+Homebrew packages, including during check mode.
 
 Clone this fork and install the Ansible roles:
 

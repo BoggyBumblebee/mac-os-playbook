@@ -27,6 +27,11 @@ This playbook installs and configures most of the software I use on my Mac for w
   6. Run `ansible-galaxy install -r requirements.yml` inside this directory to install required Ansible roles.
   7. Run `ansible-playbook main.yml --ask-become-pass` inside this directory. Enter your macOS account password when prompted for the 'BECOME' password.
 
+This playbook pre-taps and trusts entries from `homebrew_taps` before installing
+Homebrew packages, including during check mode. Homebrew still needs to be
+installed before the playbook starts so those taps can be trusted before package
+resolution.
+
 > Note: If some Homebrew commands fail, you might need to agree to Xcode's license or fix some other Brew issue. Run `brew doctor` to see if this is the case.
 
 ### Use with a remote Mac

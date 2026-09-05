@@ -12,6 +12,13 @@
         - "{{ playbook_dir }}/config.yml"
       tags: ['always']
 
+    - name: Trust configured Homebrew taps.
+      import_tasks: tasks/homebrew-trust.yml
+      when:
+        - homebrew_trust_configured_taps | default(true)
+        - (homebrew_taps | default([])) | length > 0
+      tags: ['always', 'homebrew']
+
   roles:
     - role: elliotweiser.osx-command-line-tools
     - role: geerlingguy.mac.homebrew
