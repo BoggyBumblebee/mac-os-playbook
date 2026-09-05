@@ -1,4 +1,8 @@
 ---
+exclude_paths:
+  - .ansible/
+  - roles/
+
 skip_list:
   - schema[meta]
   - role-name

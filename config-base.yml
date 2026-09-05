@@ -20,95 +20,92 @@ dockitems_persist:
     path: "/Applications/Mail.app/"
     pos: 1
   - name: "Safari"
-    path: "/Applications/Safari.app/"    
-    pos: 2
-  - name: "Safari"        
     path: "/Applications/Safari.app/"
-    pos: 3
-  - name: "Calendar"        
+    pos: 2
+  - name: "Calendar"
     path: "/Applications/Calendar.app/"
-    pos: 4
-  - name: "Contacts"        
+    pos: 3
+  - name: "Contacts"
     path: "/Applications/Contacts.app/"
-    pos: 5
+    pos: 4
   - name: "Notes"
     path: "/Applications/Notes.app/"
+    pos: 5
+  - name: "Reminders"
+    path: "/Applications/Reminders.app/"
     pos: 6
-  - name: "Reminders"        
+  - name: "Messages"
     path: "/Applications/Messages.app/"
     pos: 7
-  - name: "Messages"        
-    path: "/Applications/Messages.app/"
-    pos: 8
   - name: "reMarkable"
     path: "/Applications/reMarkable.app/"
-    pos: 9
-  - name: "FaceTime"        
+    pos: 8
+  - name: "FaceTime"
     path: "/Applications/FaceTime.app/"
-    pos: 10    
+    pos: 9
   - name: "WhatsApp"
     path: "/Applications/WhatsApp.app/"
-    pos: 11 
+    pos: 10
   - name: "Slack"
     path: "/Applications/Slack.app/"
-    pos: 12
-  - name: "IntelliJ IDEA Ultimate"        
+    pos: 11
+  - name: "IntelliJ IDEA Ultimate"
     path: "/Users/cmb/Applications/IntelliJ IDEA Ultimate.app/"
-    pos: 13
+    pos: 12
   - name: "GoLand"
     path: "/Users/cmb/Applications/GoLand.app/"
-    pos: 14
+    pos: 13
   - name: "PyCharm Professional Edition"
     path: "/Users/cmb/Applications/PyCharm Professional Edition.app/"
-    pos: 15
+    pos: 14
   - name: "RustRover"
     path: "/Users/cmb/Applications/RustRover.app/"
-    pos: 16
+    pos: 15
   - name: "Postman"
     path: "/Applications/Postman.app/"
-    pos: 17
+    pos: 16
   - name: "BBEdit"
     path: "/Applications/BBEdit.app/"
-    pos: 18
+    pos: 17
   - name: "Sublime Text"
     path: "/Applications/Sublime Text.app/"
-    pos: 19
+    pos: 18
   - name: "Parallels Desktop"
     path: "/Applications/Parallels Desktop.app/"
-    pos: 20
+    pos: 19
   - name: "Music"
     path: "/Applications/Music.app/"
-    pos: 21
+    pos: 20
   - name: "TV"
     path: "/Applications/TV.app/"
-    pos: 22
+    pos: 21
   - name: "Adobe Lightroom Classic"
     path: "/Applications/Adobe Lightroom Classic/Adobe Lightroom Classic.app/"
-    pos: 23
+    pos: 22
   - name: "Photos"
     path: "/Applications/Photos.app/"
-    pos: 24
+    pos: 23
   - name: "Microsoft Excel"
     path: "/Applications/Microsoft Excel.app/"
-    pos: 25
+    pos: 24
   - name: "Adobe Acrobat"
     path: "/Applications/Adobe Acrobat DC/Adobe Acrobat.app/"
-    pos: 26
+    pos: 25
   - name: "Passwords"
     path: "/Applications/Passwords.app/"
-    pos: 27
+    pos: 26
   - name: "iStatistica Pro"
     path: "/Applications/iStatistica Pro.app/"
-    pos: 28
+    pos: 27
   - name: "Activity Monitor"
     path: "/Applications/Utilities/Activity Monitor.app/"
-    pos: 29    
+    pos: 28
   - name: "Terminal"
     path: "/Applications/Utilities/Terminal.app/"
-    pos: 30
+    pos: 29
   - name: "System Settings"
     path: "/Applications/System Settings.app/"
-    pos: 31
+    pos: 30
 
 configure_sudoers: false
 sudoers_custom_config: ''
@@ -164,7 +161,7 @@ homebrew_installed_packages:
   - wifi-password
   - zsh-history-substring-search
 
-homebrew_taps: 
+homebrew_taps:
   - cargo-lambda/cargo-lambda
 
 homebrew_cask_appdir: /Applications
@@ -196,48 +193,48 @@ homebrew_cask_apps:
 
 # See `geerlingguy.mas` role documentation for usage instructions.
 mas_installed_apps:
-  - { id: 557468553, name: "Bluetooth Explorer" }
-  - { id: 1150771803, name: "Countdown Timer Plus" }
-  - { id: 640199958, name: "Developer" }
-  - { id: 549083868, name: "Display Menu" }
-  - { id: 937759555, name: "Elmedia Player" }
-  - { id: 1298486723, name: "FileZilla Pro" }
-  - { id: 424389933, name: "Final Cut Pro" }
-  - { id: 1460836908, name: "GoPro Player" }
-  - { id: 1470872890, name: "Hacker Pad" }
-  - { id: 1342896380, name: "Hex Fiend" }
-  - { id: 439697913, name: "Icon Slate" }
-  - { id: 992115977, name: "Image2icon" }
-  - { id: 1447778660, name: "iStatistica Pro" }
-  - { id: 489094439, name: "iTeleport" }
-  - { id: 302584613, name: "Kindle" }
-  - { id: 1438838068, name: "KubeContext" }
-  - { id: 634148309, name: "Logic Pro" }
-  - { id: 1240063289, name: "Magic Battery" }
-  - { id: 714196447, name: "MenuBar Stats" }
-  - { id: 954885838, name: "Mixed In Key 8" }
-  - { id: 434290957, name: "Motion" }
-  - { id: 905953485, name: "NordVPN" }
-  - { id: 955864065, name: "Nutshell" }
-  - { id: 882812218, name: "Owly" }
-  - { id: 405219581, name: "PDF Toolkit" }
-  - { id: 963504129, name: "Pommie" }
-  - { id: 402990477, name: "PwGenerator" }
-  - { id: 1276493162, name: "reMarkable" } 
-  - { id: 409907375, name: "Remote Desktop" }
-  - { id: 568020055, name: "Scapple" }
-  - { id: 1310686187, name: "Scrivener 3" }
-  - { id: 803453959, name: "Slack" }
-  - { id: 1006087419, name: "SnippetsLab" }
-  - { id: 1153157709, name: "Speedtest" }
-  - { id: 1378587993, name: "SQLiteFlow" }
-  - { id: 1191449274, name: "ToothFairy" }
-  - { id: 994556965, name: "vCardConverter for Excel" }
-  - { id: 959485650, name: "Vector Icon Box" }
-  - { id: 1147396723, name: "WhatsApp" }
-  - { id: 494803304, name: "WiFi Explorer" }
-  - { id: 858446756, name: "World Clock Pro" }
-  - { id: 497799835, name: "Xcode" }
+  - {id: 557468553, name: "Bluetooth Explorer"}
+  - {id: 1150771803, name: "Countdown Timer Plus"}
+  - {id: 640199958, name: "Developer"}
+  - {id: 549083868, name: "Display Menu"}
+  - {id: 937759555, name: "Elmedia Player"}
+  - {id: 1298486723, name: "FileZilla Pro"}
+  - {id: 424389933, name: "Final Cut Pro"}
+  - {id: 1460836908, name: "GoPro Player"}
+  - {id: 1470872890, name: "Hacker Pad"}
+  - {id: 1342896380, name: "Hex Fiend"}
+  - {id: 439697913, name: "Icon Slate"}
+  - {id: 992115977, name: "Image2icon"}
+  - {id: 1447778660, name: "iStatistica Pro"}
+  - {id: 489094439, name: "iTeleport"}
+  - {id: 302584613, name: "Kindle"}
+  - {id: 1438838068, name: "KubeContext"}
+  - {id: 634148309, name: "Logic Pro"}
+  - {id: 1240063289, name: "Magic Battery"}
+  - {id: 714196447, name: "MenuBar Stats"}
+  - {id: 954885838, name: "Mixed In Key 8"}
+  - {id: 434290957, name: "Motion"}
+  - {id: 905953485, name: "NordVPN"}
+  - {id: 955864065, name: "Nutshell"}
+  - {id: 882812218, name: "Owly"}
+  - {id: 405219581, name: "PDF Toolkit"}
+  - {id: 963504129, name: "Pommie"}
+  - {id: 402990477, name: "PwGenerator"}
+  - {id: 1276493162, name: "reMarkable"}
+  - {id: 409907375, name: "Remote Desktop"}
+  - {id: 568020055, name: "Scapple"}
+  - {id: 1310686187, name: "Scrivener 3"}
+  - {id: 803453959, name: "Slack"}
+  - {id: 1006087419, name: "SnippetsLab"}
+  - {id: 1153157709, name: "Speedtest"}
+  - {id: 1378587993, name: "SQLiteFlow"}
+  - {id: 1191449274, name: "ToothFairy"}
+  - {id: 994556965, name: "vCardConverter for Excel"}
+  - {id: 959485650, name: "Vector Icon Box"}
+  - {id: 1147396723, name: "WhatsApp"}
+  - {id: 494803304, name: "WiFi Explorer"}
+  - {id: 858446756, name: "World Clock Pro"}
+  - {id: 497799835, name: "Xcode"}
 
 osx_script: "~/.osx"
 
