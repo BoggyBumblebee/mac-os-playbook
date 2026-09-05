@@ -336,7 +336,7 @@ run_guest_validation() {
 }
 
 tart_vm_exists() {
-  tart list 2>/dev/null | awk '{print $1}' | grep -Fxq "$1"
+  tart list --source local --quiet 2>/dev/null | grep -Fxq "$1"
 }
 
 wait_for_tart_ip() {
