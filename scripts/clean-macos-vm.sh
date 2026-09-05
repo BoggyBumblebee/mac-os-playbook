@@ -188,7 +188,14 @@ config_value() {
     config_file="config.yml"
   fi
 
-  awk -F':[[:space:]]*' -v key="${key}" '$1 == key {print $2; exit}' "${config_file}" \
+  awk -v key="${key}" '
+    $0 ~ "^" key ":" {
+      value = $0
+      sub("^[^:]+:[[:space:]]*", "", value)
+      print value
+      exit
+    }
+  ' "${config_file}" \
     | sed 's/^"//; s/"$//; s/^'\''//; s/'\''$//'
 }
 
@@ -220,7 +227,7 @@ expand_guest_path() {
       printf '%s\n' "${HOME}"
       ;;
     "~/"*)
-      printf '%s/%s\n' "${HOME}" "${path#~/}"
+      printf '%s/%s\n' "${HOME}" "${path:2}"
       ;;
     *)
       printf '%s\n' "${path}"
