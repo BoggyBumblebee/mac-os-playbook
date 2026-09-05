@@ -40,6 +40,16 @@ Then edit the `inventory` file in this repository and change the line that start
 
 If you need to supply an SSH password (if you don't use SSH keys), make sure to pass the `--ask-pass` parameter to the `ansible-playbook` command.
 
+### GitHub SSH authentication helper
+
+If you want to generate and register a GitHub SSH key manually, use the parameterized helper:
+
+```bash
+./git-authentication.sh --email you@example.com
+```
+
+The helper creates an ed25519 key, stores it in the macOS keychain, updates a managed `Host github.com` block in `~/.ssh/config`, copies the public key to the clipboard when `pbcopy` is available, and then tests `ssh -T git@github.com`.
+
 ### Running a specific set of tagged tasks
 
 You can filter which part of the provisioning process to run by specifying a set of tags using `ansible-playbook`'s `--tags` flag. The tags available are `dotfiles`, `homebrew`, `mas`, `extra-packages` and `osx`.
