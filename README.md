@@ -165,7 +165,7 @@ scripts/clean-macos-vm.sh guest
 scripts/clean-macos-vm.sh tart
 ```
 
-`tart` mode is the most repeatable path for Apple Silicon Macs. Tart uses Apple's native Virtualization.framework under the hood, clones a clean macOS image, starts it, copies this working tree into the guest, and runs the guest validation flow over SSH.
+`tart` mode is the most repeatable path for Apple Silicon Macs. Tart uses Apple's native Virtualization.framework under the hood, clones a clean macOS image, starts it, copies this working tree into the guest, bootstraps Homebrew and Ansible if needed, and runs the guest validation flow over SSH.
 
 ```bash
 brew install openai/tools/tart
@@ -183,7 +183,7 @@ scripts/clean-macos-vm.sh tart \
   --password admin
 ```
 
-By default the VM flow runs `ansible-galaxy`, a syntax check, and an Ansible check-mode pass with `--skip-tags mas,post`. Add `--real --idempotence` after the check-mode output looks safe:
+By default the VM flow installs missing guest prerequisites, runs `ansible-galaxy`, a syntax check, and an Ansible check-mode pass with `--skip-tags mas,post`. Add `--real --idempotence` after the check-mode output looks safe:
 
 ```bash
 scripts/clean-macos-vm.sh tart --real --idempotence

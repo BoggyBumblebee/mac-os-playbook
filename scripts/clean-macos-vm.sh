@@ -48,6 +48,7 @@ Environment overrides:
 
 Notes:
   - Tart uses Apple's Virtualization.framework under the hood.
+  - Guest validation bootstraps Homebrew and Ansible when they are missing.
   - Mac App Store automation is skipped by default because Apple Media Services
     are not available in macOS VMs.
   - The guest command also works in native-framework VMs created with
@@ -66,6 +67,26 @@ log() {
 
 have_command() {
   command -v "$1" >/dev/null 2>&1
+}
+
+load_homebrew_environment() {
+  local prefix
+
+  for prefix in /opt/homebrew /usr/local; do
+    if [[ -x "${prefix}/bin/brew" ]]; then
+      eval "$("${prefix}/bin/brew" shellenv)"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+install_homebrew() {
+  log "Installing Homebrew in the guest."
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  load_homebrew_environment || true
+  have_command brew || die "Homebrew installation completed, but brew is still not on PATH."
 }
 
 macos_major_version() {
@@ -122,13 +143,16 @@ NOTES
 }
 
 ensure_guest_tools() {
+  load_homebrew_environment || true
+
   if ! have_command brew; then
-    die "Homebrew is not installed in the guest. Install Homebrew first, then rerun this command."
+    install_homebrew
   fi
 
   if ! have_command ansible-playbook; then
     log "Installing Ansible in the guest with Homebrew."
     brew install ansible
+    load_homebrew_environment || true
   fi
 }
 
