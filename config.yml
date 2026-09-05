@@ -228,7 +228,7 @@ homebrew_cask_apps:
   - bettermouse
   - firefox
   - jetbrains-toolbox
-  - logitune
+  - logi-options+
   - microsoft-auto-update
   - microsoft-office
   - onyx
@@ -255,15 +255,15 @@ mas_installed_apps:
   - {id: 1487860882, name: "iMazing Profile Editor"}
   - {id: 408981434, name: "iMovie"}
   - {id: 1447778660, name: "iStatistica Pro"}
-  - {id: 409183694, name: "Keynote"}
+  - {id: 361285480, name: "Keynote"}
   - {id: 302584613, name: "Kindle"}
   - {id: 634148309, name: "Logic Pro"}
   - {id: 714196447, name: "MenuBar Stats"}
   - {id: 434290957, name: "Motion"}
   - {id: 905953485, name: "NordVPN"}
-  - {id: 409203825, name: "Numbers"}
-  - {id: 409201541, name: "Pages"}
-  - {id: 405219581, name: "PDF Toolkit"}
+  - {id: 361304891, name: "Numbers"}
+  - {id: 361309726, name: "Pages"}
+  - {id: 545164971, name: "PDF Toolkit"}
   - {id: 1276493162, name: "reMarkable"}
   - {id: 409907375, name: "Remote Desktop"}
   - {id: 568020055, name: "Scapple"}

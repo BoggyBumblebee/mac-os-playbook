@@ -1,6 +1,9 @@
 # Fresh Mac Validation Checklist
 
-Use this when testing the playbook on real Apple hardware after a clean macOS install. Tart is useful for fast repeatable checks, but a real Mac is the only reliable way to validate App Store installs, Apple ID dependent apps, and the final Dock with all app sources available.
+Use this when testing the playbook on real Apple hardware after a clean macOS
+install. Tart is useful for fast repeatable checks, but a real Mac is the only
+reliable way to validate App Store installs, Apple ID dependent apps, and the
+final Dock with all app sources available.
 
 ## Before Starting
 
@@ -13,7 +16,13 @@ Record the test context before making changes:
 - Network: stable Wi-Fi or Ethernet
 - Power: plugged in
 
-Complete Apple's setup assistant, create the local admin account, and sign into the App Store before running the playbook. The `mas` role cannot sign into the App Store for you.
+Complete Apple's setup assistant, create the local admin account, and sign into
+the App Store before running the playbook. The `mas` role cannot sign into the
+App Store for you.
+
+Keynote, Numbers, and Pages currently require macOS 15.6 or later from the App
+Store. If the clean Mac is on an older macOS release, expect those MAS installs
+to fail until macOS is updated.
 
 ## Bootstrap
 
@@ -58,7 +67,9 @@ Then run check mode and keep the log:
 ansible-playbook main.yml --ask-become-pass --check 2>&1 | tee ~/mac-os-playbook-check.log
 ```
 
-Expected result: no failed tasks. Some tasks can report changes in check mode because Homebrew, MAS, Dock, and macOS defaults are not perfectly dry-run friendly.
+Expected result: no failed tasks. Some tasks can report changes in check mode
+because Homebrew, MAS, Dock, and macOS defaults are not perfectly dry-run
+friendly.
 
 ## First Real Run
 
@@ -68,7 +79,9 @@ Run the full playbook:
 ansible-playbook main.yml --ask-become-pass 2>&1 | tee ~/mac-os-playbook-first-run.log
 ```
 
-If macOS prompts for permissions, approve the prompt and note which app or task triggered it. If a task fails, capture the task name and the last 30 lines of output before applying any manual fix.
+If macOS prompts for permissions, approve the prompt and note which app or task
+triggered it. If a task fails, capture the task name and the last 30 lines of
+output before applying any manual fix.
 
 ## Second Run
 
@@ -78,7 +91,9 @@ Run the playbook again to check repeatability:
 ansible-playbook main.yml --ask-become-pass 2>&1 | tee ~/mac-os-playbook-second-run.log
 ```
 
-Expected result: no failed tasks. A small number of changed tasks can be acceptable for `latest` packages, Homebrew metadata, MAS state, or Dock restarts, but any repeated functional change should be investigated.
+Expected result: no failed tasks. A small number of changed tasks can be
+acceptable for `latest` packages, Homebrew metadata, MAS state, or Dock restarts,
+but any repeated functional change should be investigated.
 
 ## Verification Commands
 
@@ -95,6 +110,14 @@ Check the shell dependencies that previously failed in the VM:
 ```bash
 test -r /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
 command -v thefuck
+```
+
+Check that launching a shell does not modify `.zshrc`:
+
+```bash
+cp ~/.zshrc /tmp/zshrc.before
+zsh -lic exit
+cmp -s /tmp/zshrc.before ~/.zshrc && echo ".zshrc stable" || echo ".zshrc changed during startup"
 ```
 
 Check the dotfile links and macOS settings script:
