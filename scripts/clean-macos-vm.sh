@@ -249,18 +249,30 @@ wait_for_tart_ip() {
   die "Timed out waiting for an IP address from Tart VM ${vm}."
 }
 
+tart_ssh_options() {
+  printf '%s\n' \
+    -o StrictHostKeyChecking=no \
+    -o UserKnownHostsFile=/dev/null \
+    -o PreferredAuthentications=password \
+    -o PubkeyAuthentication=no \
+    -o IdentitiesOnly=yes
+}
+
 wait_for_ssh() {
   local user="$1"
   local password="$2"
   local ip="$3"
   local attempts=90
+  local ssh_options=()
 
   have_command sshpass || die "Install sshpass first: brew install cirruslabs/cli/sshpass"
+  while IFS= read -r option; do
+    ssh_options+=("${option}")
+  done < <(tart_ssh_options)
 
   for _ in $(seq 1 "${attempts}"); do
     if sshpass -p "${password}" ssh \
-      -o StrictHostKeyChecking=no \
-      -o UserKnownHostsFile=/dev/null \
+      "${ssh_options[@]}" \
       -o ConnectTimeout=5 \
       "${user}@${ip}" "printf ready" >/dev/null 2>&1; then
       return 0
@@ -275,11 +287,14 @@ tart_ssh() {
   local user="$1"
   local password="$2"
   local ip="$3"
+  local ssh_options=()
   shift 3
+  while IFS= read -r option; do
+    ssh_options+=("${option}")
+  done < <(tart_ssh_options)
 
   sshpass -p "${password}" ssh \
-    -o StrictHostKeyChecking=no \
-    -o UserKnownHostsFile=/dev/null \
+    "${ssh_options[@]}" \
     "${user}@${ip}" "$@"
 }
 
@@ -301,9 +316,12 @@ tart_copy_repo_to_guest() {
     .
 
   tart_ssh "${user}" "${password}" "${ip}" "rm -rf '${guest_workdir}' && mkdir -p '${guest_workdir}'"
+  local ssh_options=()
+  while IFS= read -r option; do
+    ssh_options+=("${option}")
+  done < <(tart_ssh_options)
   sshpass -p "${password}" scp \
-    -o StrictHostKeyChecking=no \
-    -o UserKnownHostsFile=/dev/null \
+    "${ssh_options[@]}" \
     "${archive}" "${user}@${ip}:/tmp/mac-os-playbook.tar.gz"
   tart_ssh "${user}" "${password}" "${ip}" "tar -xzf /tmp/mac-os-playbook.tar.gz -C '${guest_workdir}'"
   rm -f "${archive}"
