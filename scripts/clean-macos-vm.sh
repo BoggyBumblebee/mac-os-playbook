@@ -240,16 +240,14 @@ prepare_dotfiles_for_check_mode() {
   configure_dotfiles="$(config_value configure_dotfiles)"
   [[ "${configure_dotfiles}" == true ]] || return 0
 
-  local repo destination version dotfiles_home
+  local repo destination version
   repo="$(config_value dotfiles_repo)"
   destination="$(expand_guest_path "$(config_value dotfiles_repo_local_destination)")"
   version="$(config_value dotfiles_repo_version)"
-  dotfiles_home="$(expand_guest_path "$(config_value dotfiles_home)")"
 
   [[ -n "${repo}" ]] || return 0
   [[ -n "${destination}" ]] || return 0
   [[ -n "${version}" ]] || version="master"
-  [[ -n "${dotfiles_home}" ]] || dotfiles_home="${HOME}"
 
   log "Pre-seeding dotfiles for check-mode validation."
   mkdir -p "$(dirname "${destination}")"
@@ -265,8 +263,6 @@ prepare_dotfiles_for_check_mode() {
     [[ -n "${dotfile}" ]] || continue
     [[ -e "${destination}/${dotfile}" ]] \
       || die "Configured dotfile does not exist in ${repo}: ${dotfile}"
-    mkdir -p "$(dirname "${dotfiles_home}/${dotfile}")"
-    ln -sfn "${destination}/${dotfile}" "${dotfiles_home}/${dotfile}"
   done < <(config_list_values dotfiles_files)
 }
 
