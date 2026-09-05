@@ -13,7 +13,6 @@ dockitems_remove:
   - Freeform
   - News
   - Podcasts
-  - 'App Store'
   - Keynote
   - Numbers
   - Pages
@@ -21,31 +20,31 @@ dockitems_remove:
 
 dockitems_persist:
   - name: "Mail"
-    path: "/Applications/Mail.app/"
+    path: "/System/Applications/Mail.app/"
     pos: 1
   - name: "Safari"
-    path: "/Applications/Safari.app/"
+    path: "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"
     pos: 2
   - name: "Calendar"
-    path: "/Applications/Calendar.app/"
+    path: "/System/Applications/Calendar.app/"
     pos: 3
   - name: "Contacts"
-    path: "/Applications/Contacts.app/"
+    path: "/System/Applications/Contacts.app/"
     pos: 4
   - name: "Notes"
-    path: "/Applications/Notes.app/"
+    path: "/System/Applications/Notes.app/"
     pos: 5
   - name: "Reminders"
-    path: "/Applications/Reminders.app/"
+    path: "/System/Applications/Reminders.app/"
     pos: 6
-  - name: "Messages"
-    path: "/Applications/Messages.app/"
-    pos: 7
   - name: "reMarkable"
     path: "/Applications/reMarkable.app/"
+    pos: 7
+  - name: "Messages"
+    path: "/System/Applications/Messages.app/"
     pos: 8
   - name: "FaceTime"
-    path: "/Applications/FaceTime.app/"
+    path: "/System/Applications/FaceTime.app/"
     pos: 9
   - name: "WhatsApp"
     path: "/Applications/WhatsApp.app/"
@@ -53,63 +52,112 @@ dockitems_persist:
   - name: "Slack"
     path: "/Applications/Slack.app/"
     pos: 11
-  - name: "IntelliJ IDEA Ultimate"
-    path: "/Users/cmb/Applications/IntelliJ IDEA Ultimate.app/"
+  - name: "Visual Studio Code"
+    path: "/Applications/Visual Studio Code.app/"
     pos: 12
-  - name: "GoLand"
-    path: "/Users/cmb/Applications/GoLand.app/"
+  - name: "Xcode"
+    path: "/Applications/Xcode.app/"
     pos: 13
-  - name: "PyCharm"
-    path: "/Users/cmb/Applications/PyCharm.app/"
+  - name: "Simulator"
+    path: "/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/"
     pos: 14
-  - name: "RustRover"
-    path: "/Users/cmb/Applications/RustRover.app/"
+  - name: "Developer"
+    path: "/Applications/Developer.app/"
     pos: 15
-  - name: "Postman"
-    path: "/Applications/Postman.app/"
-    pos: 16
   - name: "BBEdit"
     path: "/Applications/BBEdit.app/"
+    pos: 16
+  - name: "Postman"
+    path: "/Applications/Postman.app/"
     pos: 17
   - name: "Sublime Text"
     path: "/Applications/Sublime Text.app/"
     pos: 18
-  - name: "Parallels Desktop"
-    path: "/Applications/Parallels Desktop.app/"
+  - name: "TV"
+    path: "/System/Applications/TV.app/"
     pos: 19
   - name: "Music"
-    path: "/Applications/Music.app/"
+    path: "/System/Applications/Music.app/"
     pos: 20
-  - name: "TV"
-    path: "/Applications/TV.app/"
-    pos: 21
-  - name: "Adobe Lightroom Classic"
-    path: "/Applications/Adobe Lightroom Classic/Adobe Lightroom Classic.app/"
-    pos: 22
   - name: "Photos"
-    path: "/Applications/Photos.app/"
-    pos: 23
+    path: "/System/Applications/Photos.app/"
+    pos: 21
   - name: "Microsoft Excel"
     path: "/Applications/Microsoft Excel.app/"
+    pos: 22
+  - name: "Microsoft Word"
+    path: "/Applications/Microsoft Word.app/"
+    pos: 23
+  - name: "Microsoft PowerPoint"
+    path: "/Applications/Microsoft PowerPoint.app/"
     pos: 24
-  - name: "Adobe Acrobat"
-    path: "/Applications/Adobe Acrobat DC/Adobe Acrobat.app/"
-    pos: 25
   - name: "Passwords"
-    path: "/Applications/Passwords.app/"
-    pos: 26
+    path: "/System/Applications/Passwords.app/"
+    pos: 25
   - name: "iStatistica Pro"
     path: "/Applications/iStatistica Pro.app/"
-    pos: 27
+    pos: 26
   - name: "Activity Monitor"
-    path: "/Applications/Utilities/Activity Monitor.app/"
-    pos: 28
+    path: "/System/Applications/Utilities/Activity Monitor.app/"
+    pos: 27
   - name: "Terminal"
-    path: "/Applications/Utilities/Terminal.app/"
+    path: "/System/Applications/Utilities/Terminal.app/"
+    pos: 28
+  - name: "Find My"
+    path: "/System/Applications/FindMy.app/"
     pos: 29
-  - name: "System Settings"
-    path: "/Applications/System Settings.app/"
+  - name: "Screen Sharing"
+    path: "/System/Applications/Utilities/Screen Sharing.app/"
     pos: 30
+  - name: "Logi Options+"
+    path: "/Applications/logioptionsplus.app/"
+    pos: 31
+  - name: "App Store"
+    path: "/System/Applications/App Store.app/"
+    pos: 32
+  - name: "Preview"
+    path: "/System/Applications/Preview.app/"
+    pos: 33
+  - name: "System Settings"
+    path: "/System/Applications/System Settings.app/"
+    pos: 34
+
+# Dock items present on this Mac but held back until their install source is
+# managed by this playbook.
+# dockitems_pending_install_source:
+#   - name: "ChatGPT"
+#     path: "/Applications/ChatGPT.app/"
+#     source_pos: 3
+#   - name: "GoLand"
+#     path: "{{ ansible_user_dir }}/Applications/GoLand.app/"
+#     source_pos: 17
+#   - name: "PyCharm"
+#     path: "{{ ansible_user_dir }}/Applications/PyCharm.app/"
+#     source_pos: 18
+#   - name: "IntelliJ IDEA"
+#     path: "{{ ansible_user_dir }}/Applications/IntelliJ IDEA.app/"
+#     source_pos: 19
+#   - name: "RustRover"
+#     path: "{{ ansible_user_dir }}/Applications/RustRover.app/"
+#     source_pos: 20
+#   - name: "Postico 2"
+#     path: "/Applications/Postico 2.app/"
+#     source_pos: 22
+#   - name: "LaunchControl"
+#     path: "/Applications/LaunchControl.app/"
+#     source_pos: 23
+#   - name: "Parallels Desktop"
+#     path: "/Applications/Parallels Desktop.app/"
+#     source_pos: 26
+#   - name: "Sky Go"
+#     path: "{{ ansible_user_dir }}/Applications/Sky Go.app/"
+#     source_pos: 28
+#   - name: "draw.io"
+#     path: "/Applications/draw.io.app/"
+#     source_pos: 34
+#   - name: "Hodgepodge"
+#     path: "/Applications/Hodgepodge.app/"
+#     source_pos: 44
 
 configure_sudoers: false
 sudoers_custom_config: ''
@@ -130,103 +178,99 @@ dotfiles_files:
 
 homebrew_installed_packages:
   - ansible
+  - ansible-lint
   - aws-sam-cli
   - awscli
   - bash-completion
-  - bat
-  - docker
-  - docker-credential-helper
+  - cirruslabs/cli/sshpass
+  - cmake
+  - diesel
   - dockutil
   - gh
   - git
   - go
   - golang-migrate
+  - gops
   - goreleaser
-  - helm
   - htop
-  - jq
+  - keith/formulae/ld64.lld
   - lld
   - make
   - mas
-  - minikube
   - node
   - nvm
-  - rustup
+  - openai/tools/tart
+  - pkgconf
+  - postgresql@17
+  - postgresql@18
+  - pstree
+  - ripgrep
   - smartmontools
   - thefuck
-  - transmission-cli
-  - tree
+  - timescale/tap/timescaledb
   - vim
   - wget
-  - wifi-password
+  - xcodegen
+  - yamllint
   - zsh-history-substring-search
 
 homebrew_taps:
-  - cargo-lambda/cargo-lambda
+  - cargo-lambda/tap
+  - cirruslabs/cli
+  - keith/formulae
+  - openai/tools
+  - timescale/tap
 
 homebrew_cask_appdir: /Applications
 homebrew_cask_apps:
-  - adobe-creative-cloud
-  - anaconda
   - bbedit
   - betterdisplay
   - bettermouse
-  - docker-desktop
   - firefox
-  - handbrake
-  - jdownloader
   - jetbrains-toolbox
-  - launchpad-manager
-  - leapp
   - logitune
   - microsoft-auto-update
   - microsoft-office
   - onyx
-  - pallotron-yubiswitch
   - paragon-ntfs
   - postman
   - steam
   - sublime-text
-  - transmission
-  - transmit
-  - vagrant
-  - virtualbox
+  - visual-studio-code
   - vlc
   - whatsapp
 
 # See `geerlingguy.mas` role documentation for usage instructions.
 mas_installed_apps:
-  - {id: 1150771803, name: "Countdown Timer Plus"}
+  - {id: 1466185689, name: "Blackmagic RAW Speed Test"}
   - {id: 640199958, name: "Developer"}
+  - {id: 425264550, name: "Disk Speed Test"}
   - {id: 549083868, name: "Display Menu"}
   - {id: 937759555, name: "Elmedia Player"}
   - {id: 1298486723, name: "FileZilla Pro"}
   - {id: 424389933, name: "Final Cut Pro"}
+  - {id: 682658836, name: "GarageBand"}
   - {id: 1460836908, name: "GoPro Player"}
   - {id: 1342896380, name: "Hex Fiend"}
-  - {id: 439697913, name: "Icon Slate"}
-  - {id: 992115977, name: "Image2icon"}
+  - {id: 1487860882, name: "iMazing Profile Editor"}
+  - {id: 408981434, name: "iMovie"}
   - {id: 1447778660, name: "iStatistica Pro"}
+  - {id: 409183694, name: "Keynote"}
   - {id: 302584613, name: "Kindle"}
-  - {id: 1438838068, name: "KubeContext"}
   - {id: 634148309, name: "Logic Pro"}
-  - {id: 1240063289, name: "Magic Battery"}
   - {id: 714196447, name: "MenuBar Stats"}
   - {id: 434290957, name: "Motion"}
   - {id: 905953485, name: "NordVPN"}
-  - {id: 882812218, name: "Owly"}
-  - {id: 963504129, name: "Pommie"}
-  - {id: 402990477, name: "PwGenerator"}
+  - {id: 409203825, name: "Numbers"}
+  - {id: 409201541, name: "Pages"}
+  - {id: 405219581, name: "PDF Toolkit"}
   - {id: 1276493162, name: "reMarkable"}
   - {id: 409907375, name: "Remote Desktop"}
   - {id: 568020055, name: "Scapple"}
-  - {id: 1310686187, name: "Scrivener 3"}
+  - {id: 1310686187, name: "Scrivener"}
   - {id: 803453959, name: "Slack"}
-  - {id: 1006087419, name: "SnippetsLab"}
   - {id: 1153157709, name: "Speedtest"}
   - {id: 1378587993, name: "SQLiteFlow"}
-  - {id: 1191449274, name: "ToothFairy"}
-  - {id: 994556965, name: "vCardConverter for Excel"}
   - {id: 494803304, name: "WiFi Explorer"}
   - {id: 858446756, name: "World Clock Pro"}
   - {id: 497799835, name: "Xcode"}
