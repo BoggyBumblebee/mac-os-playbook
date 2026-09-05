@@ -4,6 +4,8 @@ There are some things in life that just can't be automated... or aren't 100% wor
 
 This document covers that, at least in terms of setting up a brand new Mac out of the box.
 
+For a repeatable test pass on clean Apple hardware, follow [real-mac-validation.md](real-mac-validation.md) alongside these personal setup notes.
+
 ## Initial configuration of a brand new Mac
 
 Before starting, I completed Apple's mandatory macOS setup wizard (creating a local user account, and optionally signing into my iCloud account). Once on the macOS desktop, I do the following (in order):

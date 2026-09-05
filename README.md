@@ -155,6 +155,8 @@ Since I've used this playbook to set up something like 20 different Macs, I deci
 
 You can see my full from-scratch setup document here: [full-mac-setup.md](full-mac-setup.md).
 
+For validating this fork on clean real hardware, use the fresh Mac checklist: [real-mac-validation.md](real-mac-validation.md).
+
 ## Testing the Playbook
 
 Many people have asked me if I often wipe my entire workstation and start from scratch just to test changes to the playbook. Nope! This project is [continuously tested on GitHub Actions' macOS infrastructure](https://github.com/geerlingguy/mac-dev-playbook/actions?query=workflow%3ACI).
