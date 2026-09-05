@@ -49,6 +49,8 @@ Environment overrides:
 Notes:
   - Tart uses Apple's Virtualization.framework under the hood.
   - Guest validation bootstraps Homebrew and Ansible when they are missing.
+  - Dotfiles are pre-seeded before check mode so the dotfiles role can be tested
+    in clean macOS VMs.
   - Mac App Store automation is skipped by default because Apple Media Services
     are not available in macOS VMs.
   - The guest command also works in native-framework VMs created with
@@ -141,8 +143,9 @@ Native Apple Virtualization.framework workflow:
 
    scripts/clean-macos-vm.sh guest --real --idempotence
 
-The guest workflow skips mas and post tasks by default. That keeps App Store
-sign-in and machine-specific post-provision work out of the clean VM signal.
+The guest workflow skips mas and post tasks by default. Dotfiles are pre-seeded
+before check mode so the dotfiles role and .osx handoff can still be tested in a
+clean VM.
 NOTES
 }
 
@@ -158,6 +161,12 @@ ensure_guest_tools() {
     brew install ansible
     load_homebrew_environment || true
   fi
+
+  if ! have_command git; then
+    log "Installing Git in the guest with Homebrew."
+    brew install git
+    load_homebrew_environment || true
+  fi
 }
 
 run_ansible_playbook() {
@@ -169,6 +178,89 @@ run_ansible_playbook() {
   else
     ansible-playbook "$@"
   fi
+}
+
+config_value() {
+  local key="$1"
+  local config_file="default.config.yml"
+
+  if [[ -f config.yml ]]; then
+    config_file="config.yml"
+  fi
+
+  awk -F':[[:space:]]*' -v key="${key}" '$1 == key {print $2; exit}' "${config_file}" \
+    | sed 's/^"//; s/"$//; s/^'\''//; s/'\''$//'
+}
+
+config_list_values() {
+  local key="$1"
+  local config_file="default.config.yml"
+
+  if [[ -f config.yml ]]; then
+    config_file="config.yml"
+  fi
+
+  awk -v key="${key}" '
+    $0 ~ "^" key ":" { in_list = 1; next }
+    in_list && /^[^[:space:]-]/ { exit }
+    in_list && /^[[:space:]]*-/ {
+      value = $0
+      sub(/^[[:space:]]*-[[:space:]]*/, "", value)
+      gsub(/^"|"$/, "", value)
+      gsub(/^'\''|'\''$/, "", value)
+      print value
+    }
+  ' "${config_file}"
+}
+
+expand_guest_path() {
+  local path="$1"
+  case "${path}" in
+    "~")
+      printf '%s\n' "${HOME}"
+      ;;
+    "~/"*)
+      printf '%s/%s\n' "${HOME}" "${path#~/}"
+      ;;
+    *)
+      printf '%s\n' "${path}"
+      ;;
+  esac
+}
+
+prepare_dotfiles_for_check_mode() {
+  local configure_dotfiles
+  configure_dotfiles="$(config_value configure_dotfiles)"
+  [[ "${configure_dotfiles}" == true ]] || return 0
+
+  local repo destination version dotfiles_home
+  repo="$(config_value dotfiles_repo)"
+  destination="$(expand_guest_path "$(config_value dotfiles_repo_local_destination)")"
+  version="$(config_value dotfiles_repo_version)"
+  dotfiles_home="$(expand_guest_path "$(config_value dotfiles_home)")"
+
+  [[ -n "${repo}" ]] || return 0
+  [[ -n "${destination}" ]] || return 0
+  [[ -n "${version}" ]] || version="master"
+  [[ -n "${dotfiles_home}" ]] || dotfiles_home="${HOME}"
+
+  log "Pre-seeding dotfiles for check-mode validation."
+  mkdir -p "$(dirname "${destination}")"
+  if [[ -d "${destination}/.git" ]]; then
+    git -C "${destination}" fetch --depth 1 origin "${version}"
+    git -C "${destination}" checkout -f FETCH_HEAD
+  else
+    rm -rf "${destination}"
+    git clone --depth 1 --branch "${version}" "${repo}" "${destination}"
+  fi
+
+  while IFS= read -r dotfile; do
+    [[ -n "${dotfile}" ]] || continue
+    [[ -e "${destination}/${dotfile}" ]] \
+      || die "Configured dotfile does not exist in ${repo}: ${dotfile}"
+    mkdir -p "$(dirname "${dotfiles_home}/${dotfile}")"
+    ln -sfn "${destination}/${dotfile}" "${dotfiles_home}/${dotfile}"
+  done < <(config_list_values dotfiles_files)
 }
 
 run_guest_validation() {
@@ -211,6 +303,8 @@ run_guest_validation() {
 
   log "Installing Ansible Galaxy dependencies."
   ansible-galaxy install -r requirements.yml
+
+  prepare_dotfiles_for_check_mode
 
   log "Running syntax check."
   ansible-playbook main.yml --syntax-check
