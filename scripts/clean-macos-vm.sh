@@ -36,6 +36,7 @@ Tart options:
   --cpu COUNT           vCPU count for a new VM. Default: 4
   --memory MIB          Memory for a new VM. Default: 8192
   --disk-size GB        Disk size for a new VM. Default: 80
+  --recreate            Delete an existing VM with this name before cloning.
   --real                Run a real playbook pass after syntax/check-mode validation.
   --idempotence         After --real, run a second real pass and expect changed=0.
   --skip-tags TAGS      Tags to skip. Default: mas,post
@@ -266,6 +267,17 @@ prepare_dotfiles_for_check_mode() {
   done < <(config_list_values dotfiles_files)
 }
 
+prepare_homebrew_taps_for_check_mode() {
+  log "Pre-seeding Homebrew taps for check-mode validation."
+  while IFS= read -r tap; do
+    [[ -n "${tap}" ]] || continue
+    if brew tap | grep -Fxq "${tap}"; then
+      continue
+    fi
+    brew tap "${tap}"
+  done < <(config_list_values homebrew_taps)
+}
+
 run_guest_validation() {
   local real_run=false
   local idempotence=false
@@ -308,6 +320,7 @@ run_guest_validation() {
   ansible-galaxy install -r requirements.yml
 
   prepare_dotfiles_for_check_mode
+  prepare_homebrew_taps_for_check_mode
 
   log "Running syntax check."
   ansible-playbook main.yml --syntax-check
@@ -360,7 +373,11 @@ tart_ssh_options() {
   printf '%s\n' \
     -o StrictHostKeyChecking=no \
     -o UserKnownHostsFile=/dev/null \
+    -o BatchMode=no \
     -o PreferredAuthentications=password \
+    -o PasswordAuthentication=yes \
+    -o KbdInteractiveAuthentication=no \
+    -o NumberOfPasswordPrompts=1 \
     -o PubkeyAuthentication=no \
     -o IdentitiesOnly=yes
 }
@@ -446,6 +463,7 @@ run_tart_validation() {
   local real_run=false
   local idempotence=false
   local keep_running=false
+  local recreate=false
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -477,6 +495,10 @@ run_tart_validation() {
         disk_size="${2:?missing value for --disk-size}"
         shift 2
         ;;
+      --recreate)
+        recreate=true
+        shift
+        ;;
       --real)
         real_run=true
         shift
@@ -506,6 +528,12 @@ run_tart_validation() {
   host_check
   have_command tart || die "Install Tart first: brew install openai/tools/tart"
   have_command sshpass || die "Install sshpass first: brew install cirruslabs/cli/sshpass"
+
+  if [[ "${recreate}" == true ]] && tart_vm_exists "${vm}"; then
+    log "Deleting existing Tart VM ${vm} before cloning a clean copy."
+    tart stop "${vm}" >/dev/null 2>&1 || true
+    tart delete "${vm}"
+  fi
 
   if ! tart_vm_exists "${vm}"; then
     log "Cloning Tart VM ${vm} from ${image}."
