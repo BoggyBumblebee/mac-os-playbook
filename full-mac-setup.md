@@ -9,6 +9,7 @@ This document covers that, at least in terms of setting up a brand new Mac out o
 Before starting, I completed Apple's mandatory macOS setup wizard (creating a local user account, and optionally signing into my iCloud account). Once on the macOS desktop, I do the following (in order):
 
   - Install Ansible (following the guide in [README.md](README.md))
+  - Sign in to the App Store, since `mas` can't sign in automatically
   - Install Brew, so we don't have to re-run Ansible twice (bug in existing code base)
   - Clone mac-os-playbook to the Mac: `git clone git@github.com:boggybumblebee/mac-os-playbook.git`
   - Drop `config.yml` from your backup to the playbook (copy over the network or using a USB flash drive).
@@ -17,6 +18,7 @@ Before starting, I completed Apple's mandatory macOS setup wizard (creating a lo
   - Start Synchronization tasks:
     - Open Photos and make sure iCloud sync options are correct
     - Open Music, make sure computer is authorized, and set Library sync options
+    - Open Dropbox, sign in, and set up sync if this Mac uses Dropbox-backed configuration.
   - Install old-fashioned apps:
     - Install Blackmagic Tools...
       - Media Express
@@ -34,7 +36,20 @@ Before starting, I completed Apple's mandatory macOS setup wizard (creating a lo
       - RustRover
       - WebStorm
   - These things might be automatable, but I do them manually right now:
-    - Configure Time Machine backup drive 
+    - Configure Time Machine backup drive
+    - Install VPN configurations if needed
+  - Manual settings to automate someday:
+    - Finder:
+      - Disable click-to-show Desktop: `defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false`
+    - System Preferences:
+      - Accessibility > Display > Reduce transparency
+      - Keyboard > Keyboard Shortcuts... > Modifier Keys... > Caps Lock to Esc
+      - Keyboard > Key repeat rate to 'Fast', Delay until repeat to 'Short'
+      - Privacy & Security > Full Disk Access > enable "Terminal"
+    - Safari:
+      - View > Show Status Bar
+      - Preferences > Advanced > "Show full website address"
+      - Preferences > Advanced > "Show features for web developers"
 
 ## To Wrap in Post-provision automation
 
@@ -43,3 +58,4 @@ The following tasks have to wait for the initial Dropbox sync to complete before
 ```
 # SSH setup.
 ssh-keygen  # and create a default key to set up .ssh folder
+```
