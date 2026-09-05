@@ -154,6 +154,56 @@ You can also run macOS itself inside a VM, for at least some of the required tes
   - [UTM](https://mac.getutm.app)
   - [Tart](https://github.com/cirruslabs/tart)
 
+### Clean macOS VM validation
+
+This fork includes a reusable VM validation helper:
+
+```bash
+scripts/clean-macos-vm.sh host-check
+scripts/clean-macos-vm.sh native-notes
+scripts/clean-macos-vm.sh guest
+scripts/clean-macos-vm.sh tart
+```
+
+`tart` mode is the most repeatable path for Apple Silicon Macs. Tart uses Apple's native Virtualization.framework under the hood, clones a clean macOS image, starts it, copies this working tree into the guest, and runs the guest validation flow over SSH.
+
+```bash
+brew install openai/tools/tart
+brew install cirruslabs/cli/sshpass
+scripts/clean-macos-vm.sh tart
+```
+
+The default Tart image is `ghcr.io/cirruslabs/macos-sequoia-base:latest`, and the default guest credentials are `admin` / `admin`, matching the Cirrus Labs base images. Override them as needed:
+
+```bash
+scripts/clean-macos-vm.sh tart \
+  --vm mac-os-playbook-test \
+  --image ghcr.io/cirruslabs/macos-tahoe-base:latest \
+  --user admin \
+  --password admin
+```
+
+By default the VM flow runs `ansible-galaxy`, a syntax check, and an Ansible check-mode pass with `--skip-tags mas,post`. Add `--real --idempotence` after the check-mode output looks safe:
+
+```bash
+scripts/clean-macos-vm.sh tart --real --idempotence
+```
+
+For VMs created directly with Apple's Virtualization.framework, VirtualBuddy, or UTM, copy or clone this repository into the guest and run the guest-side workflow:
+
+```bash
+scripts/clean-macos-vm.sh guest
+scripts/clean-macos-vm.sh guest --real --idempotence
+```
+
+If the guest image has passwordless sudo configured, use `--no-become-pass` to run without the interactive become-password prompt:
+
+```bash
+scripts/clean-macos-vm.sh guest --no-become-pass --real --idempotence
+```
+
+`mas` is skipped by default because Mac App Store automation is not a reliable VM signal; test App Store installs separately on a real signed-in Mac.
+
 ## Ansible for DevOps
 
 Check out [Ansible for DevOps](https://www.ansiblefordevops.com/), which teaches you how to automate almost anything with Ansible.

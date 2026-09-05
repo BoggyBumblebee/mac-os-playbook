@@ -1,0 +1,431 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+DEFAULT_TART_IMAGE="ghcr.io/cirruslabs/macos-sequoia-base:latest"
+DEFAULT_TART_VM="mac-os-playbook-test"
+DEFAULT_TART_USER="admin"
+DEFAULT_TART_PASS="admin"
+DEFAULT_TART_CPU="4"
+DEFAULT_TART_MEMORY="8192"
+DEFAULT_TART_DISK_SIZE="80"
+DEFAULT_SKIP_TAGS="mas,post"
+DEFAULT_GUEST_WORKDIR="mac-os-playbook-validation"
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  scripts/clean-macos-vm.sh host-check
+  scripts/clean-macos-vm.sh native-notes
+  scripts/clean-macos-vm.sh guest [--real] [--idempotence] [--skip-tags TAGS] [--no-become-pass]
+  scripts/clean-macos-vm.sh tart [options]
+
+Commands:
+  host-check       Check whether this Mac can host Apple Virtualization.framework VMs.
+  native-notes     Print the manual native VM workflow for VirtualBuddy, UTM, or Apple's sample.
+  guest            Run playbook validation inside a macOS VM from the checked-out repo.
+  tart             Create/start a Tart VM, copy this repo in, and run guest validation over SSH.
+
+Tart options:
+  --vm NAME             VM name. Default: mac-os-playbook-test
+  --image IMAGE         Tart image to clone. Default: ghcr.io/cirruslabs/macos-sequoia-base:latest
+  --user USER           Guest SSH user. Default: admin
+  --password PASSWORD   Guest SSH password. Default: admin
+  --cpu COUNT           vCPU count for a new VM. Default: 4
+  --memory MIB          Memory for a new VM. Default: 8192
+  --disk-size GB        Disk size for a new VM. Default: 80
+  --real                Run a real playbook pass after syntax/check-mode validation.
+  --idempotence         After --real, run a second real pass and expect changed=0.
+  --skip-tags TAGS      Tags to skip. Default: mas,post
+  --no-become-pass      Do not ask for a sudo/become password. Useful for CI-style VM images.
+  --keep-running        Leave the Tart VM running after validation.
+
+Environment overrides:
+  TART_VM, TART_IMAGE, TART_USER, TART_PASS, TART_CPU, TART_MEMORY,
+  TART_DISK_SIZE, PLAYBOOK_SKIP_TAGS
+
+Notes:
+  - Tart uses Apple's Virtualization.framework under the hood.
+  - Mac App Store automation is skipped by default because Apple Media Services
+    are not available in macOS VMs.
+  - The guest command also works in native-framework VMs created with
+    VirtualBuddy, UTM, or Apple's sample app.
+USAGE
+}
+
+die() {
+  printf 'error: %s\n' "$*" >&2
+  exit 1
+}
+
+log() {
+  printf '==> %s\n' "$*"
+}
+
+have_command() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+macos_major_version() {
+  sw_vers -productVersion | awk -F. '{print $1}'
+}
+
+host_check() {
+  [[ "$(uname -s)" == "Darwin" ]] || die "macOS host required."
+
+  local arch
+  arch="$(uname -m)"
+  [[ "${arch}" == "arm64" ]] || die "macOS guest virtualization requires Apple Silicon for this workflow."
+
+  local major
+  major="$(macos_major_version)"
+  if [[ "${major}" -lt 13 ]]; then
+    die "macOS 13 or newer is recommended for Tart directory sharing."
+  fi
+
+  log "Host supports the intended Apple Virtualization.framework workflow."
+  log "Architecture: ${arch}; macOS: $(sw_vers -productVersion)"
+
+  if [[ "${major}" -lt 15 ]]; then
+    log "Apple Account/iCloud support in macOS guests needs macOS 15+ on host and guest."
+  fi
+
+  log "Mac App Store / Apple Media Services remain unsuitable for VM validation; skip mas by default."
+}
+
+native_notes() {
+  cat <<'NOTES'
+Native Apple Virtualization.framework workflow:
+
+1. Create a macOS VM using one of:
+   - VirtualBuddy
+   - UTM with the Apple Virtualization backend
+   - Apple's Virtualization.framework sample app
+
+2. In the guest, create an admin user and enable Remote Login if you want SSH.
+
+3. Copy or clone this repository into the guest.
+
+4. From the repository root inside the guest, run:
+
+   scripts/clean-macos-vm.sh guest
+
+5. For a real provision after check-mode passes, run:
+
+   scripts/clean-macos-vm.sh guest --real --idempotence
+
+The guest workflow skips mas and post tasks by default. That keeps App Store
+sign-in and machine-specific post-provision work out of the clean VM signal.
+NOTES
+}
+
+ensure_guest_tools() {
+  if ! have_command brew; then
+    die "Homebrew is not installed in the guest. Install Homebrew first, then rerun this command."
+  fi
+
+  if ! have_command ansible-playbook; then
+    log "Installing Ansible in the guest with Homebrew."
+    brew install ansible
+  fi
+}
+
+run_guest_validation() {
+  local real_run=false
+  local idempotence=false
+  local skip_tags="${PLAYBOOK_SKIP_TAGS:-${DEFAULT_SKIP_TAGS}}"
+  local ask_become_pass=true
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --real)
+        real_run=true
+        shift
+        ;;
+      --idempotence)
+        idempotence=true
+        shift
+        ;;
+      --skip-tags)
+        skip_tags="${2:?missing value for --skip-tags}"
+        shift 2
+        ;;
+      --no-become-pass)
+        ask_become_pass=false
+        shift
+        ;;
+      --help|-h)
+        usage
+        exit 0
+        ;;
+      *)
+        die "Unknown guest option: $1"
+        ;;
+    esac
+  done
+
+  [[ -f "${REPO_ROOT}/main.yml" ]] || die "Run guest validation from this repository checkout."
+
+  ensure_guest_tools
+
+  log "Installing Ansible Galaxy dependencies."
+  ansible-galaxy install -r requirements.yml
+
+  log "Running syntax check."
+  ansible-playbook main.yml --syntax-check
+
+  local become_args=()
+  if [[ "${ask_become_pass}" == true ]]; then
+    become_args+=(--ask-become-pass)
+  fi
+
+  log "Running check-mode validation with --skip-tags ${skip_tags}."
+  ansible-playbook main.yml --check --diff "${become_args[@]}" --skip-tags "${skip_tags}"
+
+  if [[ "${real_run}" == true ]]; then
+    log "Running real playbook pass with --skip-tags ${skip_tags}."
+    ansible-playbook main.yml "${become_args[@]}" --skip-tags "${skip_tags}"
+  else
+    log "Skipping real provision pass. Add --real after check-mode looks good."
+  fi
+
+  if [[ "${idempotence}" == true ]]; then
+    [[ "${real_run}" == true ]] || die "--idempotence requires --real."
+
+    local idempotence_log
+    idempotence_log="$(mktemp)"
+    log "Running idempotence pass; expecting changed=0 and failed=0."
+    ansible-playbook main.yml "${become_args[@]}" --skip-tags "${skip_tags}" | tee "${idempotence_log}"
+    tail "${idempotence_log}" | grep -q 'changed=0.*failed=0' \
+      || die "Idempotence check failed. Inspect ${idempotence_log} in the guest."
+    log "Idempotence check passed."
+  fi
+}
+
+tart_vm_exists() {
+  tart list 2>/dev/null | awk '{print $1}' | grep -Fxq "$1"
+}
+
+wait_for_tart_ip() {
+  local vm="$1"
+  local attempts=90
+  local ip=""
+
+  for _ in $(seq 1 "${attempts}"); do
+    ip="$(tart ip "${vm}" 2>/dev/null || true)"
+    if [[ -n "${ip}" ]]; then
+      printf '%s\n' "${ip}"
+      return 0
+    fi
+    sleep 2
+  done
+
+  die "Timed out waiting for an IP address from Tart VM ${vm}."
+}
+
+wait_for_ssh() {
+  local user="$1"
+  local password="$2"
+  local ip="$3"
+  local attempts=90
+
+  have_command sshpass || die "Install sshpass first: brew install cirruslabs/cli/sshpass"
+
+  for _ in $(seq 1 "${attempts}"); do
+    if sshpass -p "${password}" ssh \
+      -o StrictHostKeyChecking=no \
+      -o UserKnownHostsFile=/dev/null \
+      -o ConnectTimeout=5 \
+      "${user}@${ip}" "printf ready" >/dev/null 2>&1; then
+      return 0
+    fi
+    sleep 2
+  done
+
+  die "Timed out waiting for SSH on ${user}@${ip}."
+}
+
+tart_ssh() {
+  local user="$1"
+  local password="$2"
+  local ip="$3"
+  shift 3
+
+  sshpass -p "${password}" ssh \
+    -o StrictHostKeyChecking=no \
+    -o UserKnownHostsFile=/dev/null \
+    "${user}@${ip}" "$@"
+}
+
+tart_copy_repo_to_guest() {
+  local user="$1"
+  local password="$2"
+  local ip="$3"
+  local guest_workdir="$4"
+  local archive
+
+  archive="$(mktemp -t mac-os-playbook.XXXXXX.tar.gz)"
+  tar \
+    --exclude .git \
+    --exclude .ansible \
+    --exclude roles \
+    --exclude .DS_Store \
+    -czf "${archive}" \
+    -C "${REPO_ROOT}" \
+    .
+
+  tart_ssh "${user}" "${password}" "${ip}" "rm -rf '${guest_workdir}' && mkdir -p '${guest_workdir}'"
+  sshpass -p "${password}" scp \
+    -o StrictHostKeyChecking=no \
+    -o UserKnownHostsFile=/dev/null \
+    "${archive}" "${user}@${ip}:/tmp/mac-os-playbook.tar.gz"
+  tart_ssh "${user}" "${password}" "${ip}" "tar -xzf /tmp/mac-os-playbook.tar.gz -C '${guest_workdir}'"
+  rm -f "${archive}"
+}
+
+run_tart_validation() {
+  local vm="${TART_VM:-${DEFAULT_TART_VM}}"
+  local image="${TART_IMAGE:-${DEFAULT_TART_IMAGE}}"
+  local user="${TART_USER:-${DEFAULT_TART_USER}}"
+  local password="${TART_PASS:-${DEFAULT_TART_PASS}}"
+  local cpu="${TART_CPU:-${DEFAULT_TART_CPU}}"
+  local memory="${TART_MEMORY:-${DEFAULT_TART_MEMORY}}"
+  local disk_size="${TART_DISK_SIZE:-${DEFAULT_TART_DISK_SIZE}}"
+  local skip_tags="${PLAYBOOK_SKIP_TAGS:-${DEFAULT_SKIP_TAGS}}"
+  local real_run=false
+  local idempotence=false
+  local keep_running=false
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --vm)
+        vm="${2:?missing value for --vm}"
+        shift 2
+        ;;
+      --image)
+        image="${2:?missing value for --image}"
+        shift 2
+        ;;
+      --user)
+        user="${2:?missing value for --user}"
+        shift 2
+        ;;
+      --password)
+        password="${2:?missing value for --password}"
+        shift 2
+        ;;
+      --cpu)
+        cpu="${2:?missing value for --cpu}"
+        shift 2
+        ;;
+      --memory)
+        memory="${2:?missing value for --memory}"
+        shift 2
+        ;;
+      --disk-size)
+        disk_size="${2:?missing value for --disk-size}"
+        shift 2
+        ;;
+      --real)
+        real_run=true
+        shift
+        ;;
+      --idempotence)
+        idempotence=true
+        shift
+        ;;
+      --skip-tags)
+        skip_tags="${2:?missing value for --skip-tags}"
+        shift 2
+        ;;
+      --keep-running)
+        keep_running=true
+        shift
+        ;;
+      --help|-h)
+        usage
+        exit 0
+        ;;
+      *)
+        die "Unknown tart option: $1"
+        ;;
+    esac
+  done
+
+  host_check
+  have_command tart || die "Install Tart first: brew install openai/tools/tart"
+  have_command sshpass || die "Install sshpass first: brew install cirruslabs/cli/sshpass"
+
+  if ! tart_vm_exists "${vm}"; then
+    log "Cloning Tart VM ${vm} from ${image}."
+    tart clone "${image}" "${vm}"
+    tart set "${vm}" --cpu "${cpu}" --memory "${memory}" --disk-size "${disk_size}"
+  else
+    log "Using existing Tart VM ${vm}."
+  fi
+
+  log "Starting Tart VM ${vm} in the background."
+  tart run --no-graphics "${vm}" >/tmp/"${vm}".log 2>&1 &
+  local tart_pid=$!
+
+  cleanup() {
+    if [[ "${keep_running}" != true ]]; then
+      log "Stopping Tart VM ${vm}."
+      tart stop "${vm}" >/dev/null 2>&1 || true
+    else
+      log "Leaving Tart VM ${vm} running."
+    fi
+    wait "${tart_pid}" >/dev/null 2>&1 || true
+  }
+  trap cleanup EXIT
+
+  local ip
+  ip="$(wait_for_tart_ip "${vm}")"
+  log "Tart VM IP: ${ip}"
+  wait_for_ssh "${user}" "${password}" "${ip}"
+
+  log "Copying repository snapshot into the guest."
+  tart_copy_repo_to_guest "${user}" "${password}" "${ip}" "${DEFAULT_GUEST_WORKDIR}"
+
+  local guest_args=(guest --no-become-pass --skip-tags "${skip_tags}")
+  [[ "${real_run}" == true ]] && guest_args+=(--real)
+  [[ "${idempotence}" == true ]] && guest_args+=(--idempotence)
+
+  log "Running guest validation."
+  tart_ssh "${user}" "${password}" "${ip}" \
+    "cd '${DEFAULT_GUEST_WORKDIR}' && bash scripts/clean-macos-vm.sh ${guest_args[*]}"
+}
+
+main() {
+  local command="${1:-}"
+  [[ -n "${command}" ]] || {
+    usage
+    exit 1
+  }
+  shift || true
+
+  case "${command}" in
+    host-check)
+      host_check "$@"
+      ;;
+    native-notes)
+      native_notes "$@"
+      ;;
+    guest)
+      run_guest_validation "$@"
+      ;;
+    tart)
+      run_tart_validation "$@"
+      ;;
+    --help|-h|help)
+      usage
+      ;;
+    *)
+      die "Unknown command: ${command}"
+      ;;
+  esac
+}
+
+main "$@"
