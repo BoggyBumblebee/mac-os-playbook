@@ -8,11 +8,15 @@ configure_osx: true
 # Set to 'true' to configure the Dock via dockutil.
 configure_dock: true
 dockitems_remove:
+  - Apps
   - Launchpad
   - Maps
   - Freeform
   - News
   - Podcasts
+  - Phone
+  - Games
+  - iPhone Mirroring
   - Keynote
   - Numbers
   - Pages
@@ -246,6 +250,7 @@ homebrew_cask_apps:
 # See `geerlingguy.mas` role documentation for usage instructions.
 mas_excluded_app_ids: []
 mas_installed_apps: "{{ mas_app_catalog | rejectattr('id', 'in', mas_excluded_app_ids | default([])) | list }}"
+mas_uninstalled_apps: "{{ mas_app_catalog | selectattr('id', 'in', mas_excluded_app_ids | default([])) | list }}"
 mas_app_catalog:
   - {id: 1466185689, name: "Blackmagic RAW Speed Test"}
   - {id: 640199958, name: "Developer"}

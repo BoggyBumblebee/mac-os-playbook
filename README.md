@@ -174,7 +174,9 @@ scripts/clean-macos-vm.sh tart --profile MacBookAirM2
 
 Machine overlays can set `mas_excluded_app_ids` and
 `dockitems_excluded_names` to remove entries from the shared catalogs without
-duplicating the full app lists.
+duplicating the full app lists. Excluded MAS apps are also passed to
+`mas_uninstalled_apps`, so profile-specific unwanted App Store apps are removed
+when they are already present.
 
 ## Included Applications / Configuration (Default)
 
