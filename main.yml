@@ -12,6 +12,13 @@
         - "{{ playbook_dir }}/config.yml"
       tags: ['always']
 
+    - name: Prompt for sudo password.
+      import_tasks: tasks/become-password.yml
+      when:
+        - prompt_for_become_password | default(true)
+        - ansible_become_password is not defined
+      tags: ['always']
+
     - name: Trust configured Homebrew taps.
       import_tasks: tasks/homebrew-trust.yml
       when:

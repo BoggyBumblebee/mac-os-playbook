@@ -178,10 +178,15 @@ run_ansible_playbook() {
   local ask_become_pass="$1"
   shift
 
+  local extra_vars=()
+  if [[ "${ask_become_pass}" != true ]]; then
+    extra_vars+=(--extra-vars prompt_for_become_password=false)
+  fi
+
   if [[ "${ask_become_pass}" == true ]]; then
-    ansible-playbook "$@" --ask-become-pass
+    ansible-playbook "$@" "${extra_vars[@]}"
   else
-    ansible-playbook "$@"
+    ansible-playbook "$@" "${extra_vars[@]}"
   fi
 }
 

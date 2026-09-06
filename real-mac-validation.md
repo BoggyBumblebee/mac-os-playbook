@@ -76,7 +76,7 @@ ansible-playbook main.yml --syntax-check
 Then run check mode and keep the log:
 
 ```bash
-ansible-playbook main.yml --ask-become-pass --check 2>&1 | tee ~/mac-os-playbook-check.log
+ansible-playbook main.yml --check 2>&1 | tee ~/mac-os-playbook-check.log
 ```
 
 Expected result: no failed tasks. Some tasks can report changes in check mode
@@ -88,7 +88,7 @@ friendly.
 Run the full playbook:
 
 ```bash
-ansible-playbook main.yml --ask-become-pass 2>&1 | tee ~/mac-os-playbook-first-run.log
+ansible-playbook main.yml 2>&1 | tee ~/mac-os-playbook-first-run.log
 ```
 
 If macOS prompts for permissions, approve the prompt and note which app or task
@@ -100,7 +100,7 @@ output before applying any manual fix.
 Run the playbook again to check repeatability:
 
 ```bash
-ansible-playbook main.yml --ask-become-pass 2>&1 | tee ~/mac-os-playbook-second-run.log
+ansible-playbook main.yml 2>&1 | tee ~/mac-os-playbook-second-run.log
 ```
 
 Expected result: no failed tasks. A small number of changed tasks can be

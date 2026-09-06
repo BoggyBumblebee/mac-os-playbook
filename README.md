@@ -25,7 +25,7 @@ This playbook installs and configures most of the software I use on my Mac for w
   4. Sign into the App Store if your configuration installs MAS apps.
   5. Clone or download this repository to your local drive.
   6. Run `ansible-galaxy install -r requirements.yml` inside this directory to install required Ansible roles.
-  7. Run `ansible-playbook main.yml --ask-become-pass` inside this directory. Enter your macOS account password when prompted for the 'BECOME' password.
+  7. Run `ansible-playbook main.yml` inside this directory. Enter your macOS account password when prompted.
 
 This playbook pre-taps and trusts entries from `homebrew_taps` before installing
 Homebrew packages, including during check mode. Homebrew still needs to be
@@ -42,6 +42,10 @@ before running Mac App Store tasks, including during check mode.
 The Command Line Tools are only a bootstrap prerequisite. If full Xcode is listed
 in `mas_installed_apps`, the playbook still installs Xcode from the App Store and
 then the Dock can reference `/Applications/Xcode.app`.
+
+The password prompt is provided by the playbook instead of
+`--ask-become-pass`, because Homebrew casks with privileged installers need the
+same password passed into the `homebrew_cask` module.
 
 > Note: If some Homebrew commands fail, you might need to agree to Xcode's license or fix some other Brew issue. Run `brew doctor` to see if this is the case.
 
@@ -78,7 +82,7 @@ The helper creates an ed25519 key, stores it in the macOS keychain, updates a ma
 
 You can filter which part of the provisioning process to run by specifying a set of tags using `ansible-playbook`'s `--tags` flag. The tags available are `dotfiles`, `homebrew`, `mas`, `extra-packages` and `osx`.
 
-    ansible-playbook main.yml -K --tags "dotfiles,homebrew"
+    ansible-playbook main.yml --tags "dotfiles,homebrew"
 
 ## Overriding Defaults
 
