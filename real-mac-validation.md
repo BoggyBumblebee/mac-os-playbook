@@ -48,6 +48,9 @@ brew install ansible
 The playbook pre-taps and trusts configured `homebrew_taps` before installing
 Homebrew packages, including during check mode.
 
+During check mode, the configured dotfiles repository is still cloned so the
+playbook can validate the dotfile symlinks and macOS settings script.
+
 Clone this fork and install the Ansible roles:
 
 ```bash

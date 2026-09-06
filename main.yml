@@ -19,6 +19,13 @@
         - (homebrew_taps | default([])) | length > 0
       tags: ['always', 'homebrew']
 
+    - name: Prepare dotfiles for check mode.
+      import_tasks: tasks/dotfiles-check-mode.yml
+      when:
+        - configure_dotfiles | default(true)
+        - ansible_check_mode
+      tags: ['dotfiles']
+
   roles:
     - role: elliotweiser.osx-command-line-tools
     - role: geerlingguy.mac.homebrew

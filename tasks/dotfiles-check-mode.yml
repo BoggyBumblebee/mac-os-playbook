@@ -1,0 +1,27 @@
+---
+- name: Ensure dotfiles parent directory exists for check mode.
+  file:
+    path: "{{ (dotfiles_repo_local_destination | expanduser) | dirname }}"
+    state: directory
+    mode: "0755"
+  check_mode: false
+  become: false
+
+- name: Clone configured dotfiles repository for check mode.
+  git:
+    repo: "{{ dotfiles_repo }}"
+    dest: "{{ dotfiles_repo_local_destination }}"
+    version: "{{ dotfiles_repo_version }}"
+    accept_hostkey: "{{ dotfiles_repo_accept_hostkey }}"
+  check_mode: false
+  become: false
+
+- name: Verify configured dotfiles exist in check-mode checkout.
+  stat:
+    path: "{{ dotfiles_repo_local_destination }}/{{ item }}"
+  register: dotfiles_check_mode_file
+  failed_when: not dotfiles_check_mode_file.stat.exists
+  changed_when: false
+  check_mode: false
+  become: false
+  loop: "{{ dotfiles_files }}"

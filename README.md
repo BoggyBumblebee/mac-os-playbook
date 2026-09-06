@@ -32,6 +32,10 @@ Homebrew packages, including during check mode. Homebrew still needs to be
 installed before the playbook starts so those taps can be trusted before package
 resolution.
 
+During check mode, the configured dotfiles repository is still cloned so the
+playbook can validate the dotfile symlinks and macOS settings script against a
+clean machine.
+
 > Note: If some Homebrew commands fail, you might need to agree to Xcode's license or fix some other Brew issue. Run `brew doctor` to see if this is the case.
 
 ### Use with a remote Mac
