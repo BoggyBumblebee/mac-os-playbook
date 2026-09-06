@@ -66,6 +66,9 @@ Before starting, I completed Apple's mandatory macOS setup wizard (creating a lo
     ```
 
   - If there are errors, capture the failing task and log output before applying manual fixes. Then run the playbook again.
+  - The playbook clones the dotfiles repository if needed, but it does not update
+    an existing dotfiles checkout by default. Pull or commit dotfiles changes in
+    that repository separately.
   - Start Synchronization tasks:
     - Open Photos and make sure iCloud sync options are correct
     - Open Music, make sure computer is authorized, and set Library sync options

@@ -43,6 +43,11 @@ During check mode, the configured dotfiles repository is still cloned so the
 playbook can validate the dotfile symlinks and macOS settings script against a
 clean machine.
 
+This fork leaves an existing dotfiles checkout alone by default
+(`dotfiles_repo_update: false`) so local dotfile edits do not break repeated
+playbook runs. Pull or commit changes in the dotfiles repository separately when
+you intentionally want to update it.
+
 If MAS apps are configured, the playbook installs the `mas` CLI with Homebrew
 before running Mac App Store tasks, including during check mode.
 

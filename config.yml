@@ -171,6 +171,7 @@ sudoers_custom_config: ''
 dotfiles_repo: https://github.com/boggybumblebee/dotfiles.git
 dotfiles_repo_accept_hostkey: true
 dotfiles_repo_local_destination: ~/workspace/github.com/boggybumblebee/dotfiles
+dotfiles_repo_update: false
 dotfiles_files:
   - .zshrc
   - .gitignore

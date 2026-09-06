@@ -71,9 +71,6 @@
     - role: elliotweiser.osx-command-line-tools
     - role: geerlingguy.mac.homebrew
       tags: ['homebrew']
-    - role: geerlingguy.dotfiles
-      when: configure_dotfiles
-      tags: ['dotfiles']
     - role: geerlingguy.mac.mas
       when: ((mas_installed_apps | default([])) | length > 0) or ((mas_installed_app_ids | default([])) | length > 0)
       tags: ['mas']
@@ -82,6 +79,10 @@
       tags: ['dock']
 
   tasks:
+    - import_tasks: tasks/dotfiles.yml
+      when: configure_dotfiles
+      tags: ['dotfiles']
+
     - import_tasks: tasks/sudoers.yml
       when: configure_sudoers
       tags: ['sudoers']

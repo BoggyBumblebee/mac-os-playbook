@@ -1,0 +1,49 @@
+---
+- name: Check whether dotfiles repository already exists.
+  stat:
+    path: "{{ dotfiles_repo_local_destination }}/.git"
+  register: dotfiles_repo_checkout
+  changed_when: false
+  check_mode: false
+  become: false
+
+- name: Ensure dotfiles repository is cloned locally.
+  git:
+    repo: "{{ dotfiles_repo }}"
+    dest: "{{ dotfiles_repo_local_destination }}"
+    version: "{{ dotfiles_repo_version }}"
+    accept_hostkey: "{{ dotfiles_repo_accept_hostkey }}"
+    update: "{{ dotfiles_repo_update | default(true) }}"
+  when: (not dotfiles_repo_checkout.stat.exists) or (dotfiles_repo_update | default(true))
+  become: false
+
+- name: Ensure all configured dotfiles are links.
+  command: "ls -F {{ dotfiles_home }}/{{ item }}"
+  register: existing_dotfile_info
+  failed_when: false
+  check_mode: false
+  changed_when: false
+  loop: "{{ dotfiles_files }}"
+
+- name: Remove existing dotfiles file if a replacement is being linked.
+  file:
+    path: "{{ dotfiles_home }}/{{ item.item }}"
+    state: absent
+  when: "'@' not in item.stdout"
+  loop: "{{ existing_dotfile_info.results }}"
+
+- name: Ensure parent folders of link dotfiles exist.
+  file:
+    path: "{{ (dotfiles_home ~ '/' ~ item) | dirname }}"
+    state: directory
+    follow: true
+  become: false
+  loop: "{{ dotfiles_files }}"
+
+- name: Link dotfiles into home folder.
+  file:
+    src: "{{ dotfiles_repo_local_destination }}/{{ item }}"
+    dest: "{{ dotfiles_home }}/{{ item }}"
+    state: link
+  become: false
+  loop: "{{ dotfiles_files }}"

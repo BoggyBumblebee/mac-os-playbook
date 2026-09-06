@@ -7,12 +7,22 @@
   check_mode: false
   become: false
 
+- name: Check whether dotfiles repository already exists for check mode.
+  stat:
+    path: "{{ dotfiles_repo_local_destination }}/.git"
+  register: dotfiles_check_mode_checkout
+  changed_when: false
+  check_mode: false
+  become: false
+
 - name: Clone configured dotfiles repository for check mode.
   git:
     repo: "{{ dotfiles_repo }}"
     dest: "{{ dotfiles_repo_local_destination }}"
     version: "{{ dotfiles_repo_version }}"
     accept_hostkey: "{{ dotfiles_repo_accept_hostkey }}"
+    update: "{{ dotfiles_repo_update | default(true) }}"
+  when: (not dotfiles_check_mode_checkout.stat.exists) or (dotfiles_repo_update | default(true))
   check_mode: false
   become: false
 

@@ -61,6 +61,10 @@ Homebrew packages, including during check mode.
 During check mode, the configured dotfiles repository is still cloned so the
 playbook can validate the dotfile symlinks and macOS settings script.
 
+The playbook does not update an existing dotfiles checkout by default, which
+keeps local dotfile edits from breaking repeatability. Pull or commit dotfiles
+changes separately when you want to update them.
+
 If MAS apps are configured, the playbook installs the `mas` CLI with Homebrew
 before running Mac App Store tasks, including during check mode.
 
