@@ -36,6 +36,11 @@
       when: playbook_machine_config.stat.exists
       tags: ['always']
 
+    - name: Check Xcode license before Homebrew tasks.
+      import_tasks: tasks/xcode-license.yml
+      when: ansible_facts.system == 'Darwin'
+      tags: ['always', 'homebrew']
+
     - name: Prompt for sudo password.
       import_tasks: tasks/become-password.yml
       when:

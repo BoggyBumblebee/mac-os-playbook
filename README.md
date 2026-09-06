@@ -8,7 +8,12 @@ This playbook installs and configures most of the software I use on my Mac for w
 
 ## Installation
 
-  1. Ensure Apple's Command Line Tools are installed (`xcode-select --install` to launch the installer).
+  1. Ensure Apple's Command Line Tools are installed (`xcode-select --install` to launch the installer), then accept the license:
+
+     ```bash
+     sudo xcodebuild -license accept
+     ```
+
   2. Install [Homebrew](https://brew.sh/), then add it to your current shell:
 
      ```bash
@@ -29,10 +34,10 @@ This playbook installs and configures most of the software I use on my Mac for w
   8. Run `ansible-playbook main.yml --check` for a dry run.
   9. Run `ansible-playbook main.yml` for the real provision pass. Enter your macOS account password when prompted. The password input is hidden, so the cursor will not move while you type.
 
-This playbook pre-taps and trusts entries from `homebrew_taps` before installing
-Homebrew packages, including during check mode. Homebrew still needs to be
-installed before the playbook starts so those taps can be trusted before package
-resolution.
+This playbook preflights the Xcode/Command Line Tools license, then pre-taps and
+trusts entries from `homebrew_taps` before installing Homebrew packages,
+including during check mode. Homebrew still needs to be installed before the
+playbook starts so those taps can be trusted before package resolution.
 
 During check mode, the configured dotfiles repository is still cloned so the
 playbook can validate the dotfile symlinks and macOS settings script against a

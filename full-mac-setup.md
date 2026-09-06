@@ -12,6 +12,12 @@ Before starting, I completed Apple's mandatory macOS setup wizard (creating a lo
 
   - Install Apple's Command Line Tools: `xcode-select --install`
     - This is only the bootstrap toolchain; full Xcode is installed later by the playbook from the App Store.
+  - Accept Apple's Xcode/Command Line Tools license:
+
+    ```bash
+    sudo xcodebuild -license accept
+    ```
+
   - Install Homebrew, then add it to the current shell:
 
     ```bash

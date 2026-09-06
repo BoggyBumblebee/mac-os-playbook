@@ -35,6 +35,13 @@ xcode-select --install
 This is only the bootstrap toolchain. Full Xcode is still installed later from
 the App Store because it is listed in `mas_installed_apps`.
 
+Accept Apple's Xcode/Command Line Tools license before running Homebrew or the
+playbook:
+
+```bash
+sudo xcodebuild -license accept
+```
+
 Install Homebrew, then make it available in the current shell:
 
 ```bash

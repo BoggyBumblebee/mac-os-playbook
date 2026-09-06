@@ -1,0 +1,41 @@
+---
+- name: Check whether xcodebuild is available.
+  command:
+    argv:
+      - /usr/bin/xcodebuild
+      - -version
+  register: xcodebuild_version_check
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  become: false
+
+- name: Require Xcode Command Line Tools before Homebrew tasks.
+  fail:
+    msg: >-
+      Apple's Command Line Tools are not available yet. Run
+      `xcode-select --install`, complete the installer, then rerun this
+      playbook.
+  when: xcodebuild_version_check.rc != 0
+
+- name: Check Xcode license status.
+  command:
+    argv:
+      - /usr/bin/xcodebuild
+      - -license
+      - check
+  register: xcode_license_check
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  become: false
+  when: xcodebuild_version_check.rc == 0
+
+- name: Require accepted Xcode license before Homebrew tasks.
+  fail:
+    msg: >-
+      Apple's Xcode or Command Line Tools license has not been accepted yet.
+      Run `sudo xcodebuild -license accept`, then rerun this playbook.
+  when:
+    - xcodebuild_version_check.rc == 0
+    - xcode_license_check.rc != 0
