@@ -48,25 +48,27 @@ Before starting, I completed Apple's mandatory macOS setup wizard (creating a lo
     export PLAYBOOK_MACHINE_PROFILE=MacBookAirM2
     ```
 
-  - Run the syntax check: `ansible-playbook main.yml --syntax-check`
+  - Run the syntax check: `scripts/run-playbook.sh --syntax-check`
   - Run the check-mode pass:
 
     ```bash
-    ansible-playbook main.yml --check 2>&1 | tee ~/mac-os-playbook-check.log
+    scripts/run-playbook.sh --check --log ~/mac-os-playbook-check.log
     ```
 
   - Run the real provision pass:
 
     ```bash
-    ansible-playbook main.yml 2>&1 | tee ~/mac-os-playbook-first-run.log
+    scripts/run-playbook.sh --log ~/mac-os-playbook-first-run.log
     ```
 
-    The playbook prompts for the macOS account password. The password input is hidden, so the cursor will not move while typing.
+    The runner prompts for the macOS account password before Ansible starts.
+    The password input is hidden, so the cursor will not move while typing.
+    Logs use Ansible `-v` output by default, and check mode includes `--diff`.
 
   - Run the playbook a second time to check repeatability:
 
     ```bash
-    ansible-playbook main.yml 2>&1 | tee ~/mac-os-playbook-second-run.log
+    scripts/run-playbook.sh --log ~/mac-os-playbook-second-run.log
     ```
 
   - If there are errors, capture the failing task and log output before applying manual fixes. Then run the playbook again.

@@ -34,9 +34,9 @@ This playbook installs and configures most of the software I use on my Mac for w
      the same terminal app under Full Disk Access, then quit and reopen it.
   6. Clone or download this repository to your local drive.
   7. Run `ansible-galaxy install -r requirements.yml` inside this directory to install required Ansible roles.
-  8. Run `ansible-playbook main.yml --syntax-check` inside this directory.
-  9. Run `ansible-playbook main.yml --check` for a dry run.
-  10. Run `ansible-playbook main.yml` for the real provision pass. Enter your macOS account password when prompted. The password input is hidden, so the cursor will not move while you type.
+  8. Run `scripts/run-playbook.sh --syntax-check` inside this directory.
+  9. Run `scripts/run-playbook.sh --check --log ~/mac-os-playbook-check.log` for a dry run.
+  10. Run `scripts/run-playbook.sh --log ~/mac-os-playbook-first-run.log` for the real provision pass. Enter your macOS account password when prompted. The password input is hidden, so the cursor will not move while you type.
 
 This playbook preflights the Xcode/Command Line Tools license, then pre-taps and
 trusts entries from `homebrew_taps` before installing Homebrew packages,
@@ -64,9 +64,15 @@ Machine-specific profiles are loaded from `config/machines/<profile>.yml` after
 with `-e playbook_machine_profile=MacBookAirM2` or
 `PLAYBOOK_MACHINE_PROFILE=MacBookAirM2` when testing another profile.
 
-The password prompt is provided by the playbook instead of
-`--ask-become-pass`, because Homebrew casks with privileged installers need the
-same password passed into the `homebrew_cask` module.
+Use `scripts/run-playbook.sh` for local runs. It prompts for the macOS account
+password before Ansible starts, passes it to the playbook for sudo and Homebrew
+cask installers, enables `-v` output by default, and writes a log when `--log`
+is provided. Check mode also adds `--diff`.
+
+The playbook still has a fallback password prompt for direct `ansible-playbook`
+runs. Do not rely on `--ask-become-pass` for local provisioning, because
+Ansible's native become prompt does not expose `ansible_become_password` to the
+Homebrew cask module.
 
 > Note: If some Homebrew commands fail, you might need to agree to Xcode's license or fix some other Brew issue. Run `brew doctor` to see if this is the case.
 
@@ -103,7 +109,7 @@ The helper creates an ed25519 key, stores it in the macOS keychain, updates a ma
 
 You can filter which part of the provisioning process to run by specifying a set of tags using `ansible-playbook`'s `--tags` flag. The tags available are `dotfiles`, `homebrew`, `mas`, `extra-packages` and `osx`.
 
-    ansible-playbook main.yml --tags "dotfiles,homebrew"
+    scripts/run-playbook.sh --tags "dotfiles,homebrew"
 
 ## Overriding Defaults
 

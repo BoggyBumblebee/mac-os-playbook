@@ -1,2 +1,7 @@
 [all]
 127.0.0.1  ansible_connection=local
+
+[all:vars]
+# Pin the target Python to macOS' system interpreter so Ansible does not
+# rediscover whichever Python version Homebrew happens to install next.
+ansible_python_interpreter=/usr/bin/python3

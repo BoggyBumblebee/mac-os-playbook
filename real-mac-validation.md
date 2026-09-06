@@ -95,16 +95,18 @@ export PLAYBOOK_MACHINE_PROFILE=MacBookAirM2
 Run a syntax check first:
 
 ```bash
-ansible-playbook main.yml --syntax-check
+scripts/run-playbook.sh --syntax-check
 ```
 
 Then run check mode and keep the log:
 
 ```bash
-ansible-playbook main.yml --check 2>&1 | tee ~/mac-os-playbook-check.log
+scripts/run-playbook.sh --check --log ~/mac-os-playbook-check.log
 ```
 
-The password input is hidden, so the cursor will not move while you type.
+The runner prompts for the macOS account password before Ansible starts. The
+password input is hidden, so the cursor will not move while you type. Logs use
+Ansible `-v` output by default, and check mode includes `--diff`.
 
 Expected result: no failed tasks. Some tasks can report changes in check mode
 because Homebrew, MAS, Dock, and macOS defaults are not perfectly dry-run
@@ -115,7 +117,7 @@ friendly.
 Run the full playbook:
 
 ```bash
-ansible-playbook main.yml 2>&1 | tee ~/mac-os-playbook-first-run.log
+scripts/run-playbook.sh --log ~/mac-os-playbook-first-run.log
 ```
 
 If macOS prompts for permissions, approve the prompt and note which app or task
@@ -127,7 +129,7 @@ output before applying any manual fix.
 Run the playbook again to check repeatability:
 
 ```bash
-ansible-playbook main.yml 2>&1 | tee ~/mac-os-playbook-second-run.log
+scripts/run-playbook.sh --log ~/mac-os-playbook-second-run.log
 ```
 
 Expected result: no failed tasks. A small number of changed tasks can be

@@ -41,6 +41,14 @@
       when: ansible_facts.system == 'Darwin'
       tags: ['always', 'homebrew']
 
+    - name: Use macOS account password from runner environment.
+      set_fact:
+        ansible_become_password: "{{ lookup('env', 'PLAYBOOK_BECOME_PASSWORD') }}"
+      no_log: true
+      become: false
+      when: (lookup('env', 'PLAYBOOK_BECOME_PASSWORD') | length) > 0
+      tags: ['always']
+
     - name: Prompt for sudo password.
       import_tasks: tasks/become-password.yml
       when:
