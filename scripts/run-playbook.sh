@@ -49,7 +49,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     --no-password-prompt)
       prompt_for_password=false
-      ansible_args+=(--extra-vars prompt_for_become_password=false)
+      ansible_args+=(--extra-vars '{"prompt_for_become_password": false}')
       shift
       ;;
     --syntax-check)
@@ -86,7 +86,7 @@ if [[ "${prompt_for_password}" == true && -z "${PLAYBOOK_BECOME_PASSWORD:-}" ]];
 fi
 
 if [[ -n "${PLAYBOOK_BECOME_PASSWORD:-}" ]]; then
-  ansible_args+=(--extra-vars prompt_for_become_password=false)
+  ansible_args+=(--extra-vars '{"prompt_for_become_password": false}')
 fi
 
 declare -a command=(ansible-playbook main.yml)

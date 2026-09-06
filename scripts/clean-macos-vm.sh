@@ -182,7 +182,7 @@ run_ansible_playbook() {
 
   local extra_vars=()
   if [[ "${ask_become_pass}" != true ]]; then
-    extra_vars+=(--extra-vars prompt_for_become_password=false)
+    extra_vars+=(--extra-vars '{"prompt_for_become_password": false}')
   fi
 
   if [[ "${ask_become_pass}" == true ]]; then

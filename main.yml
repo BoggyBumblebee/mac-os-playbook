@@ -52,7 +52,7 @@
     - name: Prompt for sudo password.
       import_tasks: tasks/become-password.yml
       when:
-        - prompt_for_become_password | default(true)
+        - prompt_for_become_password | default(true) | bool
         - ansible_become_password is not defined
       tags: ['always']
 
