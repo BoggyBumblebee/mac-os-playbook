@@ -1,0 +1,85 @@
+---
+- name: Remove stubborn Dock items directly from the Dock plist.
+  command:
+    argv:
+      - /usr/bin/python3
+      - -c
+      - |
+        import json
+        import os
+        import plistlib
+        import sys
+        import urllib.parse
+
+        plist_path = os.path.expanduser("~/Library/Preferences/com.apple.dock.plist")
+        specs = json.loads(sys.argv[1])
+        sections = ("persistent-apps", "persistent-others", "recent-apps")
+
+        def norm_path(value):
+            if not value:
+                return ""
+            value = urllib.parse.unquote(str(value))
+            if value.startswith("file://"):
+                value = urllib.parse.urlparse(value).path
+            return os.path.normpath(value.rstrip("/"))
+
+        targets = []
+        for spec in specs:
+            if isinstance(spec, str):
+                spec = {"label": spec}
+            targets.append({
+                "label": str(spec.get("label", "")),
+                "bundle_id": str(spec.get("bundle_id", "")),
+                "path": norm_path(spec.get("path", "")),
+            })
+
+        if not os.path.exists(plist_path):
+            print(json.dumps({"changed": False, "removed": []}))
+            sys.exit(0)
+
+        with open(plist_path, "rb") as handle:
+            dock = plistlib.load(handle)
+
+        removed = []
+
+        def tile_matches(tile):
+            data = tile.get("tile-data", {})
+            label = str(data.get("file-label", data.get("label", "")))
+            bundle_id = str(data.get("bundle-identifier", ""))
+            url = data.get("file-data", {}).get("_CFURLString", "")
+            path = norm_path(url)
+
+            for target in targets:
+                if target["label"] and target["label"] == label:
+                    return target["label"] or label
+                if target["bundle_id"] and target["bundle_id"] == bundle_id:
+                    return target["label"] or bundle_id
+                if target["path"] and target["path"] == path:
+                    return target["label"] or path
+            return ""
+
+        for section in sections:
+            original = dock.get(section, [])
+            kept = []
+            for tile in original:
+                match = tile_matches(tile)
+                if match:
+                    removed.append(match)
+                else:
+                    kept.append(tile)
+            if len(kept) != len(original):
+                dock[section] = kept
+
+        changed = bool(removed)
+        if changed:
+            with open(plist_path, "wb") as handle:
+                plistlib.dump(dock, handle, fmt=plistlib.FMT_BINARY)
+
+        print(json.dumps({"changed": changed, "removed": sorted(set(removed))}))
+      - "{{ dockitems_force_remove | default([]) | to_json }}"
+  register: dock_direct_cleanup
+  changed_when: (dock_direct_cleanup.stdout | from_json).changed | bool
+  failed_when: dock_direct_cleanup.rc != 0
+  check_mode: false
+  become: false
+  notify: Restart Dock

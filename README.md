@@ -184,6 +184,10 @@ removed when they are already present. macOS can require privacy approval before
 Terminal can remove apps; allow the terminal app in System Settings > Privacy &
 Security > App Management before running a profile that removes apps.
 
+The Dock is managed with `dockutil`, with a direct plist cleanup fallback for
+newer default macOS Dock items that `dockutil --find` can miss. Add those items
+to `dockitems_force_remove` with their label, bundle ID, and path.
+
 ## Included Applications / Configuration (Default)
 
 Applications (installed with Homebrew Cask):

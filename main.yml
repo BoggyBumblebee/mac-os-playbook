@@ -78,6 +78,10 @@
       when: configure_dock
       tags: ['dock']
 
+  handlers:
+    - import_tasks: handlers/main.yml
+      tags: ['dock']
+
   tasks:
     - import_tasks: tasks/dotfiles.yml
       when: configure_dotfiles
@@ -86,6 +90,12 @@
     - import_tasks: tasks/mas-uninstall.yml
       when: (mas_profile_uninstalled_apps | default([])) | length > 0
       tags: ['mas']
+
+    - import_tasks: tasks/dock-direct-cleanup.yml
+      when:
+        - configure_dock
+        - (dockitems_force_remove | default([])) | length > 0
+      tags: ['dock']
 
     - import_tasks: tasks/sudoers.yml
       when: configure_sudoers

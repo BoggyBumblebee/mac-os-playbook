@@ -1,0 +1,12 @@
+---
+- name: Restart Dock
+  command:
+    argv:
+      - /usr/bin/killall
+      - Dock
+  register: dock_restart
+  changed_when: false
+  failed_when: dock_restart.rc not in [0, 1]
+  check_mode: false
+  become: false
+  tags: ['dock']

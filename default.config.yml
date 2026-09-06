@@ -7,6 +7,7 @@ prompt_for_become_password: true
 # Set to 'true' to configure the Dock via dockutil.
 configure_dock: false
 dockitems_remove: []
+dockitems_force_remove: []
 # - Launchpad
 # - TV
 # - Podcasts

@@ -26,6 +26,20 @@ dockitems_remove:
   - Pages
   - GarageBand
 
+dockitems_force_remove:
+  - label: Apps
+    bundle_id: com.apple.apps.launcher
+    path: /System/Applications/Apps.app
+  - label: Phone
+    bundle_id: com.apple.mobilephone
+    path: /System/Applications/Phone.app
+  - label: Games
+    bundle_id: com.apple.games
+    path: /System/Applications/Games.app
+  - label: iPhone Mirroring
+    bundle_id: com.apple.ScreenContinuity
+    path: /System/Applications/iPhone Mirroring.app
+
 dockitems_excluded_names: []
 dockitems_persist: "{{ dockitems_persist_all | rejectattr('name', 'in', dockitems_excluded_names | default([])) | list }}"
 dockitems_persist_all:
