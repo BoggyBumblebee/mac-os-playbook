@@ -73,7 +73,7 @@ If you need to supply an SSH password (if you don't use SSH keys), make sure to 
 If you want to generate and register a GitHub SSH key manually, use the parameterized helper:
 
 ```bash
-./git-authentication.sh --email you@example.com
+scripts/git-authentication.sh --email you@example.com
 ```
 
 The helper creates an ed25519 key, stores it in the macOS keychain, updates a managed `Host github.com` block in `~/.ssh/config`, copies the public key to the clipboard when `pbcopy` is available, and then tests `ssh -T git@github.com`.

@@ -12,7 +12,7 @@ force_key=false
 usage() {
   cat <<'USAGE'
 Usage:
-  ./git-authentication.sh --email EMAIL [options]
+  scripts/git-authentication.sh --email EMAIL [options]
 
 Options:
   --email EMAIL       SSH key comment, usually the email address associated with GitHub.
