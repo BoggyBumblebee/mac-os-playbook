@@ -29,6 +29,15 @@ Before starting, I completed Apple's mandatory macOS setup wizard (creating a lo
     ```
 
   - Install the Ansible Galaxy dependencies: `ansible-galaxy install -r requirements.yml`
+  - Confirm the machine profile. The playbook looks for
+    `config/machines/<profile>.yml`, where `<profile>` defaults to the Mac's
+    Ansible hostname. If needed, pass the profile explicitly before running
+    syntax, check-mode, or real provision commands:
+
+    ```bash
+    export PLAYBOOK_MACHINE_PROFILE=MacBookAirM2
+    ```
+
   - Run the syntax check: `ansible-playbook main.yml --syntax-check`
   - Run the check-mode pass:
 

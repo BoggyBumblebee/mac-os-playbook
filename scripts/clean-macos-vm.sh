@@ -22,7 +22,7 @@ usage() {
 Usage:
   scripts/clean-macos-vm.sh host-check
   scripts/clean-macos-vm.sh native-notes
-  scripts/clean-macos-vm.sh guest [--real] [--idempotence] [--skip-tags TAGS] [--no-become-pass]
+  scripts/clean-macos-vm.sh guest [--real] [--idempotence] [--skip-tags TAGS] [--no-become-pass] [--profile PROFILE]
   scripts/clean-macos-vm.sh tart [options]
 
 Commands:
@@ -44,12 +44,14 @@ Tart options:
   --idempotence         After --real, run a second real pass and expect changed=0.
   --skip-tags TAGS      Tags to skip. Default: mas,post
   --no-become-pass      Do not ask for a sudo/become password. Useful for CI-style VM images.
+  --profile PROFILE     Machine profile from config/machines/ to use for validation.
   --keep-running        Leave the Tart VM running after validation.
 
 Environment overrides:
   TART_VM, TART_IMAGE, TART_USER, TART_PASS, TART_CPU, TART_MEMORY,
   TART_DISK_SIZE, PLAYBOOK_SKIP_TAGS, TART_SSH_ATTEMPTS,
-  TART_SSH_RETRY_DELAY, PLAYBOOK_VM_EXCLUDED_HOMEBREW_PACKAGES
+  TART_SSH_RETRY_DELAY, PLAYBOOK_MACHINE_PROFILE,
+  PLAYBOOK_VM_EXCLUDED_HOMEBREW_PACKAGES
 
 Notes:
   - Tart uses Apple's Virtualization.framework under the hood.
@@ -338,6 +340,7 @@ run_guest_validation() {
   local idempotence=false
   local skip_tags="${PLAYBOOK_SKIP_TAGS:-${DEFAULT_SKIP_TAGS}}"
   local ask_become_pass=true
+  local machine_profile="${PLAYBOOK_MACHINE_PROFILE:-}"
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -357,6 +360,10 @@ run_guest_validation() {
         ask_become_pass=false
         shift
         ;;
+      --profile)
+        machine_profile="${2:?missing value for --profile}"
+        shift 2
+        ;;
       --help|-h)
         usage
         exit 0
@@ -371,6 +378,11 @@ run_guest_validation() {
 
   ensure_guest_tools
   prepare_vm_guest_config
+
+  if [[ -n "${machine_profile}" ]]; then
+    export PLAYBOOK_MACHINE_PROFILE="${machine_profile}"
+    log "Using machine profile ${machine_profile}."
+  fi
 
   log "Installing Ansible Galaxy dependencies."
   ansible-galaxy install -r requirements.yml
@@ -553,6 +565,7 @@ run_tart_validation() {
   local idempotence=false
   local keep_running=false
   local recreate=false
+  local machine_profile="${PLAYBOOK_MACHINE_PROFILE:-}"
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -598,6 +611,10 @@ run_tart_validation() {
         ;;
       --skip-tags)
         skip_tags="${2:?missing value for --skip-tags}"
+        shift 2
+        ;;
+      --profile)
+        machine_profile="${2:?missing value for --profile}"
         shift 2
         ;;
       --keep-running)
@@ -660,6 +677,7 @@ run_tart_validation() {
   tart_copy_repo_to_guest "${user}" "${password}" "${ip}" "${DEFAULT_GUEST_WORKDIR}"
 
   local guest_args=(guest --no-become-pass --skip-tags "${skip_tags}")
+  [[ -n "${machine_profile}" ]] && guest_args+=(--profile "${machine_profile}")
   [[ "${real_run}" == true ]] && guest_args+=(--real)
   [[ "${idempotence}" == true ]] && guest_args+=(--idempotence)
 

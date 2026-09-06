@@ -65,6 +65,15 @@ cd mac-os-playbook
 ansible-galaxy install -r requirements.yml
 ```
 
+Confirm the machine profile before running the playbook. The profile defaults to
+the Mac's Ansible hostname and loads `config/machines/<profile>.yml` after the
+main `config.yml`. To force a profile for validation, export it before the
+syntax, check-mode, and real provision commands:
+
+```bash
+export PLAYBOOK_MACHINE_PROFILE=MacBookAirM2
+```
+
 ## Dry Run
 
 Run a syntax check first:

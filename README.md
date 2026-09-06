@@ -45,6 +45,11 @@ The Command Line Tools are only a bootstrap prerequisite. If full Xcode is liste
 in `mas_installed_apps`, the playbook still installs Xcode from the App Store and
 then the Dock can reference `/Applications/Xcode.app`.
 
+Machine-specific profiles are loaded from `config/machines/<profile>.yml` after
+`config.yml`. The profile defaults to the Mac's Ansible hostname; override it
+with `-e playbook_machine_profile=MacBookAirM2` or
+`PLAYBOOK_MACHINE_PROFILE=MacBookAirM2` when testing another profile.
+
 The password prompt is provided by the playbook instead of
 `--ask-become-pass`, because Homebrew casks with privileged installers need the
 same password passed into the `homebrew_cask` module.
@@ -129,6 +134,37 @@ dockitems_persist:
 ```
 
 Any variable can be overridden in `config.yml`; see the supporting roles' documentation for a complete list of available variables.
+
+### Machine-specific profiles
+
+This fork keeps the complete development-machine package, MAS app, and Dock
+catalog in `config.yml`. Machine overlays live in `config/machines/` and only
+declare the differences for a particular Mac.
+
+Current profiles:
+
+- `MacStudioUltra3` uses the full `config.yml` catalog.
+- `MacMiniPro4` uses the same full catalog as `MacStudioUltra3`.
+- `MacMini4` keeps the entertainment-hub profile and excludes the heavyweight
+  development and creative MAS apps.
+- `MacBookAirM2` and `MacBookAirM5` keep the core development profile and
+  exclude the larger creative/iWork MAS apps.
+
+Run a specific profile like this:
+
+```bash
+ansible-playbook main.yml -e playbook_machine_profile=MacBookAirM2 --check
+```
+
+For the reusable VM helper, pass the same profile name with `--profile`:
+
+```bash
+scripts/clean-macos-vm.sh tart --profile MacBookAirM2
+```
+
+Machine overlays can set `mas_excluded_app_ids` and
+`dockitems_excluded_names` to remove entries from the shared catalogs without
+duplicating the full app lists.
 
 ## Included Applications / Configuration (Default)
 
@@ -221,6 +257,7 @@ The default Tart image is `ghcr.io/cirruslabs/macos-sequoia-base:latest`, and th
 scripts/clean-macos-vm.sh tart \
   --vm mac-os-playbook-test \
   --image ghcr.io/cirruslabs/macos-tahoe-base:latest \
+  --profile MacBookAirM2 \
   --user admin \
   --password admin
 ```

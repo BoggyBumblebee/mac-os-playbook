@@ -18,7 +18,9 @@ dockitems_remove:
   - Pages
   - GarageBand
 
-dockitems_persist:
+dockitems_excluded_names: []
+dockitems_persist: "{{ dockitems_persist_all | rejectattr('name', 'in', dockitems_excluded_names | default([])) | list }}"
+dockitems_persist_all:
   - name: "Mail"
     path: "/System/Applications/Mail.app/"
     pos: 1
@@ -241,7 +243,9 @@ homebrew_cask_apps:
   - whatsapp
 
 # See `geerlingguy.mas` role documentation for usage instructions.
-mas_installed_apps:
+mas_excluded_app_ids: []
+mas_installed_apps: "{{ mas_app_catalog | rejectattr('id', 'in', mas_excluded_app_ids | default([])) | list }}"
+mas_app_catalog:
   - {id: 1466185689, name: "Blackmagic RAW Speed Test"}
   - {id: 640199958, name: "Developer"}
   - {id: 425264550, name: "Disk Speed Test"}

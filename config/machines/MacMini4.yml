@@ -1,0 +1,42 @@
+---
+# Entertainment-hub profile for the TV Mac.
+
+mas_excluded_app_ids:
+  - 1466185689 # Blackmagic RAW Speed Test
+  - 640199958 # Developer
+  - 425264550 # Disk Speed Test
+  - 937759555 # Elmedia Player
+  - 1298486723 # FileZilla Pro
+  - 424389933 # Final Cut Pro
+  - 682658836 # GarageBand
+  - 1460836908 # GoPro Player
+  - 1342896380 # Hex Fiend
+  - 1487860882 # iMazing Profile Editor
+  - 408981434 # iMovie
+  - 1447778660 # iStatistica Pro
+  - 361285480 # Keynote
+  - 302584613 # Kindle
+  - 634148309 # Logic Pro
+  - 714196447 # MenuBar Stats
+  - 434290957 # Motion
+  - 361304891 # Numbers
+  - 361309726 # Pages
+  - 545164971 # PDF Toolkit
+  - 1276493162 # reMarkable
+  - 409907375 # Remote Desktop
+  - 568020055 # Scapple
+  - 1310686187 # Scrivener
+  - 803453959 # Slack
+  - 1153157709 # Speedtest
+  - 1378587993 # SQLiteFlow
+  - 494803304 # WiFi Explorer
+  - 858446756 # World Clock Pro
+  - 497799835 # Xcode
+
+dockitems_excluded_names:
+  - Developer
+  - iStatistica Pro
+  - reMarkable
+  - Simulator
+  - Slack
+  - Xcode

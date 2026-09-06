@@ -12,6 +12,30 @@
         - "{{ playbook_dir }}/config.yml"
       tags: ['always']
 
+    - name: Set playbook machine profile.
+      set_fact:
+        playbook_machine_profile: >-
+          {{
+            playbook_machine_profile
+            | default(lookup('env', 'PLAYBOOK_MACHINE_PROFILE'), true)
+            | default(ansible_facts.hostname, true)
+          }}
+      tags: ['always']
+
+    - name: Check for machine-specific configuration.
+      stat:
+        path: "{{ playbook_dir }}/config/machines/{{ playbook_machine_profile }}.yml"
+      register: playbook_machine_config
+      changed_when: false
+      check_mode: false
+      become: false
+      tags: ['always']
+
+    - name: Include machine-specific configuration.
+      include_vars: "{{ playbook_machine_config.stat.path }}"
+      when: playbook_machine_config.stat.exists
+      tags: ['always']
+
     - name: Prompt for sudo password.
       import_tasks: tasks/become-password.yml
       when:

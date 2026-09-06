@@ -1,0 +1,12 @@
+---
+# Lightweight development-laptop profile.
+
+mas_excluded_app_ids:
+  - 424389933 # Final Cut Pro
+  - 682658836 # GarageBand
+  - 408981434 # iMovie
+  - 361285480 # Keynote
+  - 634148309 # Logic Pro
+  - 434290957 # Motion
+  - 361304891 # Numbers
+  - 361309726 # Pages
