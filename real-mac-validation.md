@@ -26,11 +26,14 @@ to fail until macOS is updated.
 
 ## Bootstrap
 
-Install the command line tools if they are not already present:
+Install the Command Line Tools if they are not already present:
 
 ```bash
 xcode-select --install
 ```
+
+This is only the bootstrap toolchain. Full Xcode is still installed later from
+the App Store because it is listed in `mas_installed_apps`.
 
 Install Homebrew, then make it available in the current shell:
 
@@ -50,6 +53,9 @@ Homebrew packages, including during check mode.
 
 During check mode, the configured dotfiles repository is still cloned so the
 playbook can validate the dotfile symlinks and macOS settings script.
+
+If MAS apps are configured, the playbook installs the `mas` CLI with Homebrew
+before running Mac App Store tasks, including during check mode.
 
 Clone this fork and install the Ansible roles:
 

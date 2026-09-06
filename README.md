@@ -8,7 +8,7 @@ This playbook installs and configures most of the software I use on my Mac for w
 
 ## Installation
 
-  1. Ensure Apple's command line tools are installed (`xcode-select --install` to launch the installer).
+  1. Ensure Apple's Command Line Tools are installed (`xcode-select --install` to launch the installer).
   2. Install [Homebrew](https://brew.sh/), then add it to your current shell:
 
      ```bash
@@ -35,6 +35,13 @@ resolution.
 During check mode, the configured dotfiles repository is still cloned so the
 playbook can validate the dotfile symlinks and macOS settings script against a
 clean machine.
+
+If MAS apps are configured, the playbook installs the `mas` CLI with Homebrew
+before running Mac App Store tasks, including during check mode.
+
+The Command Line Tools are only a bootstrap prerequisite. If full Xcode is listed
+in `mas_installed_apps`, the playbook still installs Xcode from the App Store and
+then the Dock can reference `/Applications/Xcode.app`.
 
 > Note: If some Homebrew commands fail, you might need to agree to Xcode's license or fix some other Brew issue. Run `brew doctor` to see if this is the case.
 

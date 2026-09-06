@@ -26,6 +26,11 @@
         - ansible_check_mode
       tags: ['dotfiles']
 
+    - name: Ensure MAS CLI is available.
+      import_tasks: tasks/mas-cli.yml
+      when: ((mas_installed_apps | default([])) | length > 0) or ((mas_installed_app_ids | default([])) | length > 0)
+      tags: ['mas']
+
   roles:
     - role: elliotweiser.osx-command-line-tools
     - role: geerlingguy.mac.homebrew
@@ -34,7 +39,7 @@
       when: configure_dotfiles
       tags: ['dotfiles']
     - role: geerlingguy.mac.mas
-      when: (mas_installed_apps | length > 0) or (mas_installed_app_ids | length > 0)
+      when: ((mas_installed_apps | default([])) | length > 0) or ((mas_installed_app_ids | default([])) | length > 0)
       tags: ['mas']
     - role: geerlingguy.mac.dock
       when: configure_dock

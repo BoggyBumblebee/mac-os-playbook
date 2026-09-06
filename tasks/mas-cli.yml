@@ -1,0 +1,44 @@
+---
+- name: Set Homebrew path for MAS CLI installation.
+  set_fact:
+    mas_cli_brew_path: "{{ homebrew_brew_bin_path | default(((ansible_machine == 'arm64') | ternary('/opt/homebrew/bin', '/usr/local/bin'))) }}/brew"
+
+- name: Check whether Homebrew is installed before MAS CLI installation.
+  stat:
+    path: "{{ mas_cli_brew_path }}"
+  register: mas_cli_brew_binary
+  changed_when: false
+  check_mode: false
+  become: false
+
+- name: Require Homebrew before installing MAS CLI.
+  fail:
+    msg: >-
+      This configuration installs Mac App Store apps, but Homebrew is not
+      installed at {{ mas_cli_brew_path }}. Install Homebrew before running this
+      playbook so the mas CLI can be installed before MAS app resolution.
+  when: not mas_cli_brew_binary.stat.exists
+
+- name: Check whether MAS CLI is installed.
+  command:
+    argv:
+      - "{{ mas_cli_brew_path }}"
+      - list
+      - --formula
+      - mas
+  register: mas_cli_installed
+  failed_when: false
+  changed_when: false
+  check_mode: false
+  become: false
+
+- name: Install MAS CLI before Mac App Store tasks.
+  command:
+    argv:
+      - "{{ mas_cli_brew_path }}"
+      - install
+      - mas
+  when: mas_cli_installed.rc != 0
+  changed_when: true
+  check_mode: false
+  become: false
