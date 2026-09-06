@@ -10,13 +10,47 @@ For a repeatable test pass on clean Apple hardware, follow [real-mac-validation.
 
 Before starting, I completed Apple's mandatory macOS setup wizard (creating a local user account, and optionally signing into my iCloud account). Once on the macOS desktop, I do the following (in order):
 
-  - Install Ansible (following the guide in [README.md](README.md))
-  - Sign in to the App Store, since `mas` can't sign in automatically
-  - Install Brew, so we don't have to re-run Ansible twice (bug in existing code base)
-  - Clone mac-os-playbook to the Mac: `git clone git@github.com:boggybumblebee/mac-os-playbook.git`
-  - Drop `config.yml` from your backup to the playbook (copy over the network or using a USB flash drive).
-  - Run the playbook with `--skip-tags post`.
-    - If there are errors, you may need to finish up other tasks like installing 'old-fashioned' apps first (since I try to place Photoshop in the Dock and it can't be installed automatically). Then, run the playbook again ;)
+  - Install Apple's Command Line Tools: `xcode-select --install`
+    - This is only the bootstrap toolchain; full Xcode is installed later by the playbook from the App Store.
+  - Install Homebrew, then add it to the current shell:
+
+    ```bash
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+    ```
+
+  - Install Ansible with Homebrew: `brew install ansible`
+  - Sign in to the App Store, since `mas` can't sign in automatically.
+  - Clone mac-os-playbook to the Mac:
+
+    ```bash
+    git clone https://github.com/BoggyBumblebee/mac-os-playbook.git
+    cd mac-os-playbook
+    ```
+
+  - Install the Ansible Galaxy dependencies: `ansible-galaxy install -r requirements.yml`
+  - Run the syntax check: `ansible-playbook main.yml --syntax-check`
+  - Run the check-mode pass:
+
+    ```bash
+    ansible-playbook main.yml --check 2>&1 | tee ~/mac-os-playbook-check.log
+    ```
+
+  - Run the real provision pass:
+
+    ```bash
+    ansible-playbook main.yml 2>&1 | tee ~/mac-os-playbook-first-run.log
+    ```
+
+    The playbook prompts for the macOS account password. The password input is hidden, so the cursor will not move while typing.
+
+  - Run the playbook a second time to check repeatability:
+
+    ```bash
+    ansible-playbook main.yml 2>&1 | tee ~/mac-os-playbook-second-run.log
+    ```
+
+  - If there are errors, capture the failing task and log output before applying manual fixes. Then run the playbook again.
   - Start Synchronization tasks:
     - Open Photos and make sure iCloud sync options are correct
     - Open Music, make sure computer is authorized, and set Library sync options
