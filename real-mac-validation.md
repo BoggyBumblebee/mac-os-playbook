@@ -79,6 +79,8 @@ Then run check mode and keep the log:
 ansible-playbook main.yml --check 2>&1 | tee ~/mac-os-playbook-check.log
 ```
 
+The password input is hidden, so the cursor will not move while you type.
+
 Expected result: no failed tasks. Some tasks can report changes in check mode
 because Homebrew, MAS, Dock, and macOS defaults are not perfectly dry-run
 friendly.

@@ -25,7 +25,7 @@ This playbook installs and configures most of the software I use on my Mac for w
   4. Sign into the App Store if your configuration installs MAS apps.
   5. Clone or download this repository to your local drive.
   6. Run `ansible-galaxy install -r requirements.yml` inside this directory to install required Ansible roles.
-  7. Run `ansible-playbook main.yml` inside this directory. Enter your macOS account password when prompted.
+  7. Run `ansible-playbook main.yml` inside this directory. Enter your macOS account password when prompted. The password input is hidden, so the cursor will not move while you type.
 
 This playbook pre-taps and trusts entries from `homebrew_taps` before installing
 Homebrew packages, including during check mode. Homebrew still needs to be
