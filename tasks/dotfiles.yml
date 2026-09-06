@@ -7,6 +7,10 @@
   check_mode: false
   become: false
 
+- name: Set dotfiles home path.
+  set_fact:
+    dotfiles_home_path: "{{ dotfiles_home | default('~') }}"
+
 - name: Ensure dotfiles repository is cloned locally.
   git:
     repo: "{{ dotfiles_repo }}"
@@ -18,7 +22,7 @@
   become: false
 
 - name: Ensure all configured dotfiles are links.
-  command: "ls -F {{ dotfiles_home }}/{{ item }}"
+  command: "ls -F {{ dotfiles_home_path }}/{{ item }}"
   register: existing_dotfile_info
   failed_when: false
   check_mode: false
@@ -27,14 +31,14 @@
 
 - name: Remove existing dotfiles file if a replacement is being linked.
   file:
-    path: "{{ dotfiles_home }}/{{ item.item }}"
+    path: "{{ dotfiles_home_path }}/{{ item.item }}"
     state: absent
   when: "'@' not in item.stdout"
   loop: "{{ existing_dotfile_info.results }}"
 
 - name: Ensure parent folders of link dotfiles exist.
   file:
-    path: "{{ (dotfiles_home ~ '/' ~ item) | dirname }}"
+    path: "{{ (dotfiles_home_path ~ '/' ~ item) | dirname }}"
     state: directory
     follow: true
   become: false
@@ -43,7 +47,7 @@
 - name: Link dotfiles into home folder.
   file:
     src: "{{ dotfiles_repo_local_destination }}/{{ item }}"
-    dest: "{{ dotfiles_home }}/{{ item }}"
+    dest: "{{ dotfiles_home_path }}/{{ item }}"
     state: link
   become: false
   loop: "{{ dotfiles_files }}"
