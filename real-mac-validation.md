@@ -5,6 +5,14 @@ install. Tart is useful for fast repeatable checks, but a real Mac is the only
 reliable way to validate App Store installs, Apple ID dependent apps, and the
 final Dock with all app sources available.
 
+## Current Validation Status
+
+As of 2026-09-06, `MacBookAirM2` has passed the syntax check, check-mode pass,
+first real provision pass, and second repeatability pass on clean real hardware.
+`MacStudioUltra3` and `MacMiniPro4` use the full development-machine catalog but
+have not been re-run during this validation round: `MacStudioUltra3` is the
+active workstation, and `MacMiniPro4` is not currently available locally.
+
 ## Before Starting
 
 Record the test context before making changes:

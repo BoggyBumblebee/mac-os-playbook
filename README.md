@@ -123,9 +123,8 @@ homebrew_installed_packages:
   - go
 
 mas_installed_apps:
-  - { id: 443987910, name: "1Password" }
-  - { id: 498486288, name: "Quick Resizer" }
-  - { id: 557168941, name: "Tweetbot" }
+  - { id: 803453959, name: "Slack" }
+  - { id: 361309726, name: "Pages" }
   - { id: 497799835, name: "Xcode" }
 
 composer_packages:
@@ -173,7 +172,7 @@ Current profiles:
 Run a specific profile like this:
 
 ```bash
-ansible-playbook main.yml -e playbook_machine_profile=MacBookAirM2 --check
+scripts/run-playbook.sh --profile MacBookAirM2 --check --log ~/mac-os-playbook-check.log
 ```
 
 For the reusable VM helper, pass the same profile name with `--profile`:
@@ -196,50 +195,20 @@ to `dockitems_force_remove` with their label, bundle ID, and path.
 
 ## Included Applications / Configuration (Default)
 
-Applications (installed with Homebrew Cask):
+The live package and application catalogs are in `config.yml`:
 
-  - [ChromeDriver](https://sites.google.com/chromium.org/driver/)
-  - [Docker](https://www.docker.com/)
-  - [Dropbox](https://www.dropbox.com/)
-  - [Firefox](https://www.mozilla.org/en-US/firefox/new/)
-  - [Google Chrome](https://www.google.com/chrome/)
-  - [Handbrake](https://handbrake.fr/)
-  - [Homebrew](http://brew.sh/)
-  - [LICEcap](http://www.cockos.com/licecap/)
-  - [nvALT](http://brettterpstra.com/projects/nvalt/)
-  - [Sequel Ace](https://sequel-ace.com) (MySQL client)
-  - [Slack](https://slack.com/)
-  - [Sublime Text](https://www.sublimetext.com/)
-  - [Transmit](https://panic.com/transmit/) (S/FTP client)
+- `homebrew_installed_packages` for Homebrew formulae.
+- `homebrew_cask_apps` for Homebrew casks.
+- `mas_app_catalog` for Mac App Store apps.
+- `dockitems_persist_all` for the managed Dock order.
 
-Packages (installed with Homebrew):
+Machine overlays in `config/machines/` remove apps or Dock items from those
+shared catalogs for a particular Mac.
 
-  - autoconf
-  - bash-completion
-  - doxygen
-  - gettext
-  - gifsicle
-  - git
-  - gh
-  - go
-  - gpg
-  - httpie
-  - iperf
-  - libevent
-  - sqlite
-  - nmap
-  - node
-  - nvm
-  - php
-  - ssh-copy-id
-  - readline
-  - openssl
-  - pv
-  - wget
-  - wrk
-  - zsh-history-substring-search
-
-My [dotfiles](https://github.com/geerlingguy/dotfiles) are also installed into the current user's home directory, including the `.osx` dotfile for configuring many aspects of macOS for better performance and ease of use. You can disable dotfiles management by setting `configure_dotfiles: no` in your configuration.
+My [dotfiles](https://github.com/BoggyBumblebee/dotfiles) are installed into the
+current user's home directory, including the `.osx` dotfile for configuring
+many aspects of macOS. You can disable dotfiles management by setting
+`configure_dotfiles: no` in your configuration.
 
 Finally, there are a few other preferences and settings added on for various apps and services.
 
@@ -253,7 +222,9 @@ For validating this fork on clean real hardware, use the fresh Mac checklist: [r
 
 ## Testing the Playbook
 
-Many people have asked me if I often wipe my entire workstation and start from scratch just to test changes to the playbook. Nope! This project is [continuously tested on GitHub Actions' macOS infrastructure](https://github.com/geerlingguy/mac-dev-playbook/actions?query=workflow%3ACI).
+Many people have asked me if I often wipe my entire workstation and start from
+scratch just to test changes to the playbook. Nope! This project is
+[continuously tested on GitHub Actions' macOS infrastructure][link-gh-actions].
 
 You can also run macOS itself inside a VM, for at least some of the required testing (App Store apps and some proprietary software might not install properly). I currently recommend:
 
@@ -325,5 +296,5 @@ Check out [Ansible for DevOps](https://www.ansiblefordevops.com/), which teaches
 
 This project was created by [Jeff Geerling](https://www.jeffgeerling.com/) (originally inspired by [MWGriffin/ansible-playbooks](https://github.com/MWGriffin/ansible-playbooks)).
 
-[badge-gh-actions]: https://github.com/geerlingguy/mac-dev-playbook/actions/workflows/ci.yml/badge.svg
-[link-gh-actions]: https://github.com/geerlingguy/mac-dev-playbook/actions/workflows/ci.yml
+[badge-gh-actions]: https://github.com/BoggyBumblebee/mac-os-playbook/actions/workflows/ci.yml/badge.svg
+[link-gh-actions]: https://github.com/BoggyBumblebee/mac-os-playbook/actions/workflows/ci.yml
