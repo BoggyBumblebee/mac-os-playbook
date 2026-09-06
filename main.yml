@@ -83,6 +83,10 @@
       when: configure_dotfiles
       tags: ['dotfiles']
 
+    - import_tasks: tasks/mas-uninstall.yml
+      when: (mas_profile_uninstalled_apps | default([])) | length > 0
+      tags: ['mas']
+
     - import_tasks: tasks/sudoers.yml
       when: configure_sudoers
       tags: ['sudoers']

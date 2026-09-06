@@ -27,6 +27,10 @@ Before starting, I completed Apple's mandatory macOS setup wizard (creating a lo
 
   - Install Ansible with Homebrew: `brew install ansible`
   - Sign in to the App Store, since `mas` can't sign in automatically.
+  - If this Mac's profile removes App Store apps, open System Settings > Privacy
+    & Security > App Management and allow the terminal app that will run the
+    playbook. If macOS still blocks app removal, also allow the same terminal
+    app under Full Disk Access, then quit and reopen it.
   - Clone mac-os-playbook to the Mac:
 
     ```bash
@@ -100,6 +104,8 @@ Before starting, I completed Apple's mandatory macOS setup wizard (creating a lo
       - Keyboard > Keyboard Shortcuts... > Modifier Keys... > Caps Lock to Esc
       - Keyboard > Key repeat rate to 'Fast', Delay until repeat to 'Short'
       - Privacy & Security > Full Disk Access > enable "Terminal"
+      - Privacy & Security > App Management > enable the terminal app running
+        the playbook if MAS app removal is blocked
     - Safari:
       - View > Show Status Bar
       - Preferences > Advanced > "Show full website address"

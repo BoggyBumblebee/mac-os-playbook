@@ -28,11 +28,15 @@ This playbook installs and configures most of the software I use on my Mac for w
      ```
 
   4. Sign into the App Store if your configuration installs MAS apps.
-  5. Clone or download this repository to your local drive.
-  6. Run `ansible-galaxy install -r requirements.yml` inside this directory to install required Ansible roles.
-  7. Run `ansible-playbook main.yml --syntax-check` inside this directory.
-  8. Run `ansible-playbook main.yml --check` for a dry run.
-  9. Run `ansible-playbook main.yml` for the real provision pass. Enter your macOS account password when prompted. The password input is hidden, so the cursor will not move while you type.
+  5. If your selected machine profile removes App Store apps, open System
+     Settings > Privacy & Security > App Management and allow the terminal app
+     that will run this playbook. If macOS still blocks app removal, also allow
+     the same terminal app under Full Disk Access, then quit and reopen it.
+  6. Clone or download this repository to your local drive.
+  7. Run `ansible-galaxy install -r requirements.yml` inside this directory to install required Ansible roles.
+  8. Run `ansible-playbook main.yml --syntax-check` inside this directory.
+  9. Run `ansible-playbook main.yml --check` for a dry run.
+  10. Run `ansible-playbook main.yml` for the real provision pass. Enter your macOS account password when prompted. The password input is hidden, so the cursor will not move while you type.
 
 This playbook preflights the Xcode/Command Line Tools license, then pre-taps and
 trusts entries from `homebrew_taps` before installing Homebrew packages,
@@ -175,8 +179,10 @@ scripts/clean-macos-vm.sh tart --profile MacBookAirM2
 Machine overlays can set `mas_excluded_app_ids` and
 `dockitems_excluded_names` to remove entries from the shared catalogs without
 duplicating the full app lists. Excluded MAS apps are also passed to
-`mas_uninstalled_apps`, so profile-specific unwanted App Store apps are removed
-when they are already present.
+`mas_profile_uninstalled_apps`, so profile-specific unwanted App Store apps are
+removed when they are already present. macOS can require privacy approval before
+Terminal can remove apps; allow the terminal app in System Settings > Privacy &
+Security > App Management before running a profile that removes apps.
 
 ## Included Applications / Configuration (Default)
 

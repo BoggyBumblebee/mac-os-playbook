@@ -55,6 +55,11 @@ Install the tool needed to run the playbook:
 brew install ansible
 ```
 
+If the selected machine profile removes App Store apps, open System Settings >
+Privacy & Security > App Management and allow the terminal app that will run the
+playbook. If macOS still blocks app removal, also allow the same terminal app
+under Full Disk Access, then quit and reopen it.
+
 The playbook pre-taps and trusts configured `homebrew_taps` before installing
 Homebrew packages, including during check mode.
 
@@ -183,6 +188,8 @@ Confirm:
 - Homebrew-installed apps are present in `/Applications`.
 - MAS-installed apps are present in `/Applications`.
 - Xcode opens far enough to accept any required license or install additional components.
+- If profile-excluded MAS apps need removal, the terminal app running the
+  playbook is allowed in System Settings > Privacy & Security > App Management.
 - The Dock order matches `dockitems_persist` in `config.yml`.
 - Apps currently held in `dockitems_pending_install_source` are not expected in the managed Dock yet.
 - Finder and System Settings preferences changed by `~/.osx` match the intended behavior.

@@ -1,0 +1,60 @@
+---
+- name: Set MAS profile uninstall path.
+  set_fact:
+    mas_profile_uninstall_path: >-
+      {{
+        mas_path | default(
+          (ansible_facts.architecture == 'arm64')
+          | ternary('/opt/homebrew/bin/mas', '/usr/local/bin/mas')
+        )
+      }}
+
+- name: List installed MAS apps before removing profile exclusions.
+  command:
+    argv:
+      - "{{ mas_profile_uninstall_path }}"
+      - list
+  register: mas_profile_installed_apps
+  changed_when: false
+  check_mode: false
+  become: false
+
+- name: Remove MAS apps excluded by the selected profile.
+  command:
+    argv:
+      - "{{ mas_profile_uninstall_path }}"
+      - uninstall
+      - "{{ item.id | string }}"
+  register: mas_profile_uninstall_results
+  changed_when: true
+  failed_when: false
+  check_mode: false
+  become: false
+  loop: "{{ mas_profile_uninstalled_apps | default([]) }}"
+  loop_control:
+    label: "{{ item.name | default(item.id) }}"
+  when: (item.id | string) in mas_profile_installed_apps.stdout
+
+- name: Explain MAS uninstall privacy failures.
+  fail:
+    msg: >-
+      macOS blocked MAS from uninstalling profile-excluded apps:
+      {{
+        mas_failed_uninstall_results
+        | map(attribute='item.name')
+        | list
+        | join(', ')
+      }}. Open System Settings > Privacy & Security > App Management and allow
+      the terminal app running this playbook, then quit and reopen that terminal
+      and rerun the playbook. If macOS still blocks the removal, also grant Full
+      Disk Access to the same terminal app.
+  vars:
+    mas_failed_uninstall_results: >-
+      {{
+        mas_profile_uninstall_results.results
+        | default([])
+        | selectattr('rc', 'defined')
+        | rejectattr('rc', 'equalto', 0)
+        | list
+      }}
+  when: mas_failed_uninstall_results | length > 0

@@ -9,14 +9,18 @@ configure_osx: true
 configure_dock: true
 dockitems_remove:
   - Apps
+  - com.apple.apps.launcher
   - Launchpad
   - Maps
   - Freeform
   - News
   - Podcasts
   - Phone
+  - com.apple.mobilephone
   - Games
+  - com.apple.games
   - iPhone Mirroring
+  - com.apple.ScreenContinuity
   - Keynote
   - Numbers
   - Pages
@@ -250,7 +254,7 @@ homebrew_cask_apps:
 # See `geerlingguy.mas` role documentation for usage instructions.
 mas_excluded_app_ids: []
 mas_installed_apps: "{{ mas_app_catalog | rejectattr('id', 'in', mas_excluded_app_ids | default([])) | list }}"
-mas_uninstalled_apps: "{{ mas_app_catalog | selectattr('id', 'in', mas_excluded_app_ids | default([])) | list }}"
+mas_profile_uninstalled_apps: "{{ mas_app_catalog | selectattr('id', 'in', mas_excluded_app_ids | default([])) | list }}"
 mas_app_catalog:
   - {id: 1466185689, name: "Blackmagic RAW Speed Test"}
   - {id: 640199958, name: "Developer"}
