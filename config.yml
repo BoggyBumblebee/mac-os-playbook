@@ -49,109 +49,120 @@ dockitems_persist_all:
   - name: "Safari"
     path: "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"
     pos: 2
+  - name: "ChatGPT"
+    path: "/Applications/ChatGPT.app/"
+    pos: 3
   - name: "Calendar"
     path: "/System/Applications/Calendar.app/"
-    pos: 3
+    pos: 4
   - name: "Contacts"
     path: "/System/Applications/Contacts.app/"
-    pos: 4
+    pos: 5
   - name: "Notes"
     path: "/System/Applications/Notes.app/"
-    pos: 5
+    pos: 6
   - name: "Reminders"
     path: "/System/Applications/Reminders.app/"
-    pos: 6
+    pos: 7
   - name: "reMarkable"
     path: "/Applications/reMarkable.app/"
-    pos: 7
+    pos: 8
   - name: "Messages"
     path: "/System/Applications/Messages.app/"
-    pos: 8
+    pos: 9
   - name: "FaceTime"
     path: "/System/Applications/FaceTime.app/"
-    pos: 9
+    pos: 10
   - name: "WhatsApp"
     path: "/Applications/WhatsApp.app/"
-    pos: 10
+    pos: 11
   - name: "Slack"
     path: "/Applications/Slack.app/"
-    pos: 11
+    pos: 12
   - name: "Visual Studio Code"
     path: "/Applications/Visual Studio Code.app/"
-    pos: 12
+    pos: 13
   - name: "Xcode"
     path: "/Applications/Xcode.app/"
-    pos: 13
+    pos: 14
   - name: "Simulator"
     path: "/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/"
-    pos: 14
+    pos: 15
   - name: "Developer"
     path: "/Applications/Developer.app/"
-    pos: 15
+    pos: 16
   - name: "BBEdit"
     path: "/Applications/BBEdit.app/"
-    pos: 16
+    pos: 17
   - name: "Postman"
     path: "/Applications/Postman.app/"
-    pos: 17
+    pos: 18
   - name: "Sublime Text"
     path: "/Applications/Sublime Text.app/"
-    pos: 18
+    pos: 19
+  - name: "Postico 2"
+    path: "/Applications/Postico 2.app/"
+    pos: 20
+  - name: "LaunchControl"
+    path: "/Applications/LaunchControl.app/"
+    pos: 21
   - name: "TV"
     path: "/System/Applications/TV.app/"
-    pos: 19
+    pos: 22
   - name: "Music"
     path: "/System/Applications/Music.app/"
-    pos: 20
+    pos: 23
   - name: "Photos"
     path: "/System/Applications/Photos.app/"
-    pos: 21
+    pos: 24
   - name: "Microsoft Excel"
     path: "/Applications/Microsoft Excel.app/"
-    pos: 22
+    pos: 25
   - name: "Microsoft Word"
     path: "/Applications/Microsoft Word.app/"
-    pos: 23
+    pos: 26
   - name: "Microsoft PowerPoint"
     path: "/Applications/Microsoft PowerPoint.app/"
-    pos: 24
+    pos: 27
+  - name: "Parallels Desktop"
+    path: "/Applications/Parallels Desktop.app/"
+    pos: 28
   - name: "Passwords"
     path: "/System/Applications/Passwords.app/"
-    pos: 25
+    pos: 29
   - name: "iStatistica Pro"
     path: "/Applications/iStatistica Pro.app/"
-    pos: 26
+    pos: 30
   - name: "Activity Monitor"
     path: "/System/Applications/Utilities/Activity Monitor.app/"
-    pos: 27
+    pos: 31
   - name: "Terminal"
     path: "/System/Applications/Utilities/Terminal.app/"
-    pos: 28
+    pos: 32
   - name: "Find My"
     path: "/System/Applications/FindMy.app/"
-    pos: 29
+    pos: 33
   - name: "Screen Sharing"
     path: "/System/Applications/Utilities/Screen Sharing.app/"
-    pos: 30
+    pos: 34
   - name: "Logi Options+"
     path: "/Applications/logioptionsplus.app/"
-    pos: 31
+    pos: 35
   - name: "App Store"
     path: "/System/Applications/App Store.app/"
-    pos: 32
+    pos: 36
   - name: "Preview"
     path: "/System/Applications/Preview.app/"
-    pos: 33
+    pos: 37
+  - name: "draw.io"
+    path: "/Applications/draw.io.app/"
+    pos: 38
   - name: "System Settings"
     path: "/System/Applications/System Settings.app/"
-    pos: 34
+    pos: 39
 
-# Dock items present on this Mac but held back until their install source is
-# managed by this playbook.
+# Dock items present on this Mac but held back from Dock management.
 # dockitems_pending_install_source:
-#   - name: "ChatGPT"
-#     path: "/Applications/ChatGPT.app/"
-#     source_pos: 3
 #   - name: "GoLand"
 #     path: "{{ ansible_user_dir }}/Applications/GoLand.app/"
 #     source_pos: 17
@@ -164,21 +175,9 @@ dockitems_persist_all:
 #   - name: "RustRover"
 #     path: "{{ ansible_user_dir }}/Applications/RustRover.app/"
 #     source_pos: 20
-#   - name: "Postico 2"
-#     path: "/Applications/Postico 2.app/"
-#     source_pos: 22
-#   - name: "LaunchControl"
-#     path: "/Applications/LaunchControl.app/"
-#     source_pos: 23
-#   - name: "Parallels Desktop"
-#     path: "/Applications/Parallels Desktop.app/"
-#     source_pos: 26
 #   - name: "Sky Go"
 #     path: "{{ ansible_user_dir }}/Applications/Sky Go.app/"
 #     source_pos: 28
-#   - name: "draw.io"
-#     path: "/Applications/draw.io.app/"
-#     source_pos: 34
 #   - name: "Hodgepodge"
 #     path: "/Applications/Hodgepodge.app/"
 #     source_pos: 44
@@ -251,13 +250,18 @@ homebrew_cask_apps:
   - bbedit
   - betterdisplay
   - bettermouse
+  - chatgpt
+  - drawio
   - firefox
   - jetbrains-toolbox
+  - launchcontrol
   - logi-options+
   - microsoft-auto-update
   - microsoft-office
   - onyx
   - paragon-ntfs
+  - parallels
+  - postico
   - postman
   - steam
   - sublime-text
