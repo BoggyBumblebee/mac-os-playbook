@@ -43,12 +43,17 @@ xcode-select --install
 This is only the bootstrap toolchain. Full Xcode is still installed later from
 the App Store because it is listed in `mas_installed_apps`.
 
-Accept Apple's Xcode/Command Line Tools license before running Homebrew or the
-playbook:
+If full Xcode is already installed and selected, accept Apple's Xcode license
+before running Homebrew or the playbook:
 
 ```bash
 sudo xcodebuild -license accept
 ```
+
+On a clean Mac with only Command Line Tools selected, that command can report
+that `xcodebuild` requires Xcode. That is OK; continue with Homebrew. Full Xcode
+is installed later from the App Store because it is listed in
+`mas_installed_apps`.
 
 Install Homebrew, then make it available in the current shell:
 
@@ -63,10 +68,14 @@ Install the tool needed to run the playbook:
 brew install ansible
 ```
 
-If the selected machine profile removes App Store apps, open System Settings >
-Privacy & Security > App Management and allow the terminal app that will run the
-playbook. If macOS still blocks app removal, also allow the same terminal app
-under Full Disk Access, then quit and reopen it.
+If the selected machine profile removes App Store apps, allow the terminal app
+before the real playbook run:
+
+1. Open System Settings > Privacy & Security > App Management.
+2. Enable `Terminal.app`, or the exact terminal app that will run the playbook.
+3. Quit and reopen that terminal app.
+4. If macOS still blocks app removal, also enable the same terminal app under
+   Full Disk Access, then quit and reopen it again.
 
 The playbook pre-taps and trusts configured `homebrew_taps` before installing
 Homebrew packages, including during check mode.
@@ -198,8 +207,9 @@ Confirm:
 - Homebrew-installed apps are present in `/Applications`.
 - MAS-installed apps are present in `/Applications`.
 - Xcode opens far enough to accept any required license or install additional components.
-- If profile-excluded MAS apps need removal, the terminal app running the
-  playbook is allowed in System Settings > Privacy & Security > App Management.
+- If profile-excluded MAS apps need removal, `Terminal.app`, or the exact
+  terminal app running the playbook, is allowed in System Settings > Privacy &
+  Security > App Management.
 - The Dock order matches `dockitems_persist` in `config.yml`.
 - Apps currently held in `dockitems_pending_install_source` are not expected in the managed Dock yet.
 - Finder and System Settings preferences changed by `~/.osx` match the intended behavior.

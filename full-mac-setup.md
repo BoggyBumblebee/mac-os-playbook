@@ -12,11 +12,15 @@ Before starting, I completed Apple's mandatory macOS setup wizard (creating a lo
 
   - Install Apple's Command Line Tools: `xcode-select --install`
     - This is only the bootstrap toolchain; full Xcode is installed later by the playbook from the App Store.
-  - Accept Apple's Xcode/Command Line Tools license:
+  - If full Xcode is already installed and selected, accept Apple's Xcode
+    license:
 
     ```bash
     sudo xcodebuild -license accept
     ```
+
+    On a clean Mac with only Command Line Tools selected, that command can
+    report that `xcodebuild` requires Xcode. That is OK; continue with Homebrew.
 
   - Install Homebrew, then add it to the current shell:
 
@@ -27,10 +31,14 @@ Before starting, I completed Apple's mandatory macOS setup wizard (creating a lo
 
   - Install Ansible with Homebrew: `brew install ansible`
   - Sign in to the App Store, since `mas` can't sign in automatically.
-  - If this Mac's profile removes App Store apps, open System Settings > Privacy
-    & Security > App Management and allow the terminal app that will run the
-    playbook. If macOS still blocks app removal, also allow the same terminal
-    app under Full Disk Access, then quit and reopen it.
+  - If this Mac's profile removes App Store apps, allow the terminal app before
+    the real playbook run:
+    - Open System Settings > Privacy & Security > App Management.
+    - Enable `Terminal.app`, or the exact terminal app that will run the
+      playbook.
+    - Quit and reopen that terminal app.
+    - If macOS still blocks app removal, also enable the same terminal app under
+      Full Disk Access, then quit and reopen it again.
   - Clone mac-os-playbook to the Mac:
 
     ```bash
@@ -105,9 +113,11 @@ Before starting, I completed Apple's mandatory macOS setup wizard (creating a lo
       - Accessibility > Display > Reduce transparency
       - Keyboard > Keyboard Shortcuts... > Modifier Keys... > Caps Lock to Esc
       - Keyboard > Key repeat rate to 'Fast', Delay until repeat to 'Short'
-      - Privacy & Security > Full Disk Access > enable "Terminal"
-      - Privacy & Security > App Management > enable the terminal app running
-        the playbook if MAS app removal is blocked
+      - Privacy & Security > App Management > enable `Terminal.app`, or the
+        exact terminal app running the playbook, before profiles that remove MAS
+        apps
+      - Privacy & Security > Full Disk Access > enable the same terminal app if
+        MAS app removal is still blocked
     - Safari:
       - View > Show Status Bar
       - Preferences > Advanced > "Show full website address"

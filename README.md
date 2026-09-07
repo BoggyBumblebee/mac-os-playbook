@@ -8,11 +8,22 @@ This playbook installs and configures most of the software I use on my Mac for w
 
 ## Installation
 
-  1. Ensure Apple's Command Line Tools are installed (`xcode-select --install` to launch the installer), then accept the license:
+  1. Ensure Apple's Command Line Tools are installed:
+
+     ```bash
+     xcode-select --install
+     ```
+
+     If full Xcode is already installed and selected, also accept its license:
 
      ```bash
      sudo xcodebuild -license accept
      ```
+
+     On a clean Mac with only Command Line Tools selected, that command can
+     report that `xcodebuild` requires Xcode. That is OK; continue with
+     Homebrew. Full Xcode is installed later from the App Store if it is in the
+     selected profile.
 
   2. Install [Homebrew](https://brew.sh/), then add it to your current shell:
 
@@ -28,20 +39,26 @@ This playbook installs and configures most of the software I use on my Mac for w
      ```
 
   4. Sign into the App Store if your configuration installs MAS apps.
-  5. If your selected machine profile removes App Store apps, open System
-     Settings > Privacy & Security > App Management and allow the terminal app
-     that will run this playbook. If macOS still blocks app removal, also allow
-     the same terminal app under Full Disk Access, then quit and reopen it.
+  5. If your selected machine profile removes App Store apps, allow the terminal
+     app before the real playbook run:
+     - Open System Settings > Privacy & Security > App Management.
+     - Enable `Terminal.app`, or the exact terminal app that will run this
+       playbook.
+     - Quit and reopen that terminal app.
+     - If macOS still blocks app removal, also enable the same terminal app
+       under Full Disk Access, then quit and reopen it again.
   6. Clone or download this repository to your local drive.
   7. Run `ansible-galaxy install -r requirements.yml` inside this directory to install required Ansible roles.
   8. Run `scripts/run-playbook.sh --syntax-check` inside this directory.
   9. Run `scripts/run-playbook.sh --check --log ~/mac-os-playbook-check.log` for a dry run.
   10. Run `scripts/run-playbook.sh --log ~/mac-os-playbook-first-run.log` for the real provision pass. Enter your macOS account password when prompted. The password input is hidden, so the cursor will not move while you type.
 
-This playbook preflights the Xcode/Command Line Tools license, then pre-taps and
+This playbook preflights the selected Apple developer tools, then pre-taps and
 trusts entries from `homebrew_taps` before installing Homebrew packages,
-including during check mode. Homebrew still needs to be installed before the
-playbook starts so those taps can be trusted before package resolution.
+including during check mode. If full Xcode is installed and selected, the
+preflight also requires the Xcode license to be accepted. Homebrew still needs
+to be installed before the playbook starts so those taps can be trusted before
+package resolution.
 
 During check mode, the configured dotfiles repository is still cloned so the
 playbook can validate the dotfile symlinks and macOS settings script against a
@@ -185,9 +202,11 @@ Machine overlays can set `mas_excluded_app_ids` and
 `dockitems_excluded_names` to remove entries from the shared catalogs without
 duplicating the full app lists. Excluded MAS apps are also passed to
 `mas_profile_uninstalled_apps`, so profile-specific unwanted App Store apps are
-removed when they are already present. macOS can require privacy approval before
-Terminal can remove apps; allow the terminal app in System Settings > Privacy &
-Security > App Management before running a profile that removes apps.
+removed when they are already present. macOS requires privacy approval before a
+terminal can remove apps; allow `Terminal.app`, or whichever terminal app runs
+the playbook, in System Settings > Privacy & Security > App Management before
+the real provision pass. If macOS still blocks removal, also grant that same
+terminal app Full Disk Access and reopen it.
 
 The Dock is managed with `dockutil`, with a direct plist cleanup fallback for
 newer default macOS Dock items that `dockutil --find` can miss. Add those items

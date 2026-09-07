@@ -1,10 +1,10 @@
 ---
-- name: Check whether xcodebuild is available.
+- name: Check whether Apple developer tools are selected.
   command:
     argv:
-      - /usr/bin/xcodebuild
-      - -version
-  register: xcodebuild_version_check
+      - /usr/bin/xcode-select
+      - -p
+  register: xcode_select_path_check
   changed_when: false
   failed_when: false
   check_mode: false
@@ -16,7 +16,28 @@
       Apple's Command Line Tools are not available yet. Run
       `xcode-select --install`, complete the installer, then rerun this
       playbook.
-  when: xcodebuild_version_check.rc != 0
+  when: xcode_select_path_check.rc != 0
+
+- name: Check whether Apple compiler tools are available.
+  command:
+    argv:
+      - /usr/bin/xcrun
+      - --find
+      - clang
+  register: xcrun_clang_check
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  become: false
+
+- name: Require usable Apple compiler tools before Homebrew tasks.
+  fail:
+    msg: >-
+      Apple's Command Line Tools are selected at
+      {{ xcode_select_path_check.stdout }}, but clang is not available through
+      xcrun. Reinstall the tools with `xcode-select --install`, then rerun this
+      playbook.
+  when: xcrun_clang_check.rc != 0
 
 - name: Check Xcode license status.
   command:
@@ -29,13 +50,19 @@
   failed_when: false
   check_mode: false
   become: false
-  when: xcodebuild_version_check.rc == 0
 
 - name: Require accepted Xcode license before Homebrew tasks.
   fail:
     msg: >-
-      Apple's Xcode or Command Line Tools license has not been accepted yet.
-      Run `sudo xcodebuild -license accept`, then rerun this playbook.
+      Apple's Xcode license has not been accepted yet. If full Xcode is
+      installed and selected, run `sudo xcodebuild -license accept`, then rerun
+      this playbook. If Xcode is installed but not selected, first run
+      `sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer`.
   when:
-    - xcodebuild_version_check.rc == 0
     - xcode_license_check.rc != 0
+    - >-
+      'requires Xcode' not in
+      (
+        (xcode_license_check.stderr | default('')) +
+        (xcode_license_check.stdout | default(''))
+      )
