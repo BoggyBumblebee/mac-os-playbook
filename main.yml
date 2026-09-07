@@ -1,11 +1,67 @@
 ---
 - name: Configure host.
   hosts: all
+  gather_facts: false
 
   vars_files:
     - default.config.yml
 
   pre_tasks:
+    - name: Accept full Xcode license before fact gathering.
+      raw: |
+        set -u
+        xcodebuild_path="/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild"
+
+        if [ "$(uname -s)" != "Darwin" ] || [ ! -x "${xcodebuild_path}" ]; then
+          exit 0
+        fi
+
+        license_output="$("${xcodebuild_path}" -license check 2>&1)" && exit 0
+
+        case "${license_output}" in
+          *"requires Xcode"*)
+            exit 0
+            ;;
+        esac
+
+        if [ -z "${PLAYBOOK_BECOME_PASSWORD:-}" ]; then
+          if sudo -n "${xcodebuild_path}" -license accept; then
+            echo "xcode_license_accepted"
+            exit 0
+          fi
+
+          echo "xcode_license_password_missing"
+          exit 42
+        fi
+
+        printf '%s\n' "${PLAYBOOK_BECOME_PASSWORD}" \
+          | sudo -S -p '' "${xcodebuild_path}" -license accept
+        echo "xcode_license_accepted"
+      register: xcode_pre_facts_license
+      changed_when: "'xcode_license_accepted' in xcode_pre_facts_license.stdout"
+      failed_when: xcode_pre_facts_license.rc not in [0, 42]
+      check_mode: false
+      become: false
+      when: xcode_accept_license | default(true) | bool
+      tags: ['always', 'xcode']
+
+    - name: Require password for Xcode license recovery before fact gathering.
+      fail:
+        msg: >-
+          Full Xcode is installed but its license is blocking Ansible fact
+          gathering. Run this playbook with `scripts/run-playbook.sh` so the
+          runner can provide the macOS account password for automatic license
+          acceptance, or run `sudo xcodebuild -license accept` manually and
+          rerun the playbook.
+      when:
+        - xcode_pre_facts_license is defined
+        - xcode_pre_facts_license.rc == 42
+      tags: ['always', 'xcode']
+
+    - name: Gather facts after Xcode license preflight.
+      setup:
+      tags: ['always']
+
     - name: Include playbook configuration.
       include_vars: "{{ item }}"
       with_fileglob:

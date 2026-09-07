@@ -86,7 +86,9 @@ with `-e playbook_machine_profile=MacBookAirM2` or
 Use `scripts/run-playbook.sh` for local runs. It prompts for the macOS account
 password before Ansible starts, passes it to the playbook for sudo and Homebrew
 cask installers, enables `-v` output by default, and writes a log when `--log`
-is provided. Check mode also adds `--diff`.
+is provided. Check mode also adds `--diff`. If full Xcode has been installed
+but its license is blocking developer tools, the runner accepts the license
+before Ansible starts so fact gathering can still run.
 
 The playbook still has a fallback password prompt for direct `ansible-playbook`
 runs. Do not rely on `--ask-become-pass` for local provisioning, because

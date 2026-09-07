@@ -75,6 +75,8 @@ Before starting, I completed Apple's mandatory macOS setup wizard (creating a lo
     The runner prompts for the macOS account password before Ansible starts.
     The password input is hidden, so the cursor will not move while typing.
     Logs use Ansible `-v` output by default, and check mode includes `--diff`.
+    If full Xcode has been installed but its license is blocking developer
+    tools, the runner accepts the license before Ansible starts.
 
   - Run the playbook a second time to check repeatability:
 

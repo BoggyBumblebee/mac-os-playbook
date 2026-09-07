@@ -125,7 +125,9 @@ scripts/run-playbook.sh --check --log ~/mac-os-playbook-check.log
 
 The runner prompts for the macOS account password before Ansible starts. The
 password input is hidden, so the cursor will not move while you type. Logs use
-Ansible `-v` output by default, and check mode includes `--diff`.
+Ansible `-v` output by default, and check mode includes `--diff`. If full Xcode
+has been installed but its license is blocking developer tools, the runner
+accepts the license before Ansible starts.
 
 Expected result: no failed tasks. Some tasks can report changes in check mode
 because Homebrew, MAS, Dock, and macOS defaults are not perfectly dry-run

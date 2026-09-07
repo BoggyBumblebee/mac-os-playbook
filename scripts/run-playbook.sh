@@ -25,6 +25,38 @@ prompt_for_password=true
 syntax_check=false
 declare -a ansible_args=()
 
+sudo_with_password() {
+  if [[ -n "${PLAYBOOK_BECOME_PASSWORD:-}" ]]; then
+    printf '%s\n' "${PLAYBOOK_BECOME_PASSWORD}" | sudo -S -p '' "$@"
+  else
+    sudo "$@"
+  fi
+}
+
+prepare_xcode_license() {
+  local xcodebuild_path="/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild"
+  local license_output
+
+  [[ "$(uname -s)" == "Darwin" ]] || return 0
+  [[ -x "${xcodebuild_path}" ]] || return 0
+  [[ "${syntax_check}" == false ]] || return 0
+
+  if license_output="$("${xcodebuild_path}" -license check 2>&1)"; then
+    return 0
+  fi
+
+  if [[ "${license_output}" == *"requires Xcode"* ]]; then
+    return 0
+  fi
+
+  if [[ "${prompt_for_password}" == false && -z "${PLAYBOOK_BECOME_PASSWORD:-}" ]]; then
+    return 0
+  fi
+
+  printf '%s\n' "==> Accepting Xcode license before Ansible starts."
+  sudo_with_password "${xcodebuild_path}" -license accept
+}
+
 export ANSIBLE_LOCAL_TEMP="${ANSIBLE_LOCAL_TEMP:-/tmp/ansible-local}"
 export ANSIBLE_REMOTE_TEMP="${ANSIBLE_REMOTE_TEMP:-/tmp/ansible-remote}"
 mkdir -p "${ANSIBLE_LOCAL_TEMP}" "${ANSIBLE_REMOTE_TEMP}"
@@ -88,6 +120,8 @@ fi
 if [[ -n "${PLAYBOOK_BECOME_PASSWORD:-}" ]]; then
   ansible_args+=(--extra-vars '{"prompt_for_become_password": false}')
 fi
+
+prepare_xcode_license
 
 declare -a command=(ansible-playbook main.yml)
 if [[ -n "${verbosity}" ]]; then
