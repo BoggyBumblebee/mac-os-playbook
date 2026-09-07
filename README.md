@@ -212,9 +212,9 @@ the playbook, in System Settings > Privacy & Security > App Management before
 the real provision pass. If macOS still blocks removal, also grant that same
 terminal app Full Disk Access and reopen it.
 
-The Dock is managed with `dockutil`, with a direct plist cleanup fallback for
-newer default macOS Dock items that `dockutil --find` can miss. Add those items
-to `dockitems_force_remove` with their label, bundle ID, and path.
+The Dock is managed with `dockutil`. Recent or suggested Dock apps are disabled
+by the macOS defaults in the dotfiles `.osx` script rather than by Dock item
+removal.
 
 ## Included Applications / Configuration (Default)
 
