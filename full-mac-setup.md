@@ -111,22 +111,14 @@ Before starting, I completed Apple's mandatory macOS setup wizard (creating a lo
   - These things might be automatable, but I do them manually right now:
     - Configure Time Machine backup drive
     - Install VPN configurations if needed
-  - Manual settings to automate someday:
-    - Finder:
-      - Disable click-to-show Desktop: `defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false`
-    - System Preferences:
-      - Accessibility > Display > Reduce transparency
-      - Keyboard > Keyboard Shortcuts... > Modifier Keys... > Caps Lock to Esc
-      - Keyboard > Key repeat rate to 'Fast', Delay until repeat to 'Short'
-      - Privacy & Security > App Management > enable `Terminal.app`, or the
-        exact terminal app running the playbook, before profiles that remove MAS
-        apps
-      - Privacy & Security > Full Disk Access > enable the same terminal app if
-        MAS app removal is still blocked
-    - Safari:
-      - View > Show Status Bar
-      - Preferences > Advanced > "Show full website address"
-      - Preferences > Advanced > "Show features for web developers"
+  - Manual settings that cannot be handled reliably with `defaults`:
+    - Keyboard > Keyboard Shortcuts... > Modifier Keys... > Caps Lock to Esc
+    - Apple ID, iCloud, Find My, Touch ID, and Apple Pay setup
+    - Privacy & Security > App Management > enable `Terminal.app`, or the
+      exact terminal app running the playbook, before profiles that remove MAS
+      apps
+    - Privacy & Security > Full Disk Access > enable the same terminal app if
+      MAS app removal is still blocked
 
 ## To Wrap in Post-provision automation
 
