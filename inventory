@@ -2,6 +2,7 @@
 127.0.0.1  ansible_connection=local
 
 [all:vars]
-# Pin the target Python to macOS' system interpreter so Ansible does not
-# rediscover whichever Python version Homebrew happens to install next.
-ansible_python_interpreter=/usr/bin/python3
+# Pin Ansible to the Command Line Tools Python. `/usr/bin/python3` follows the
+# active developer directory, so switching to full Xcode before its license is
+# accepted can prevent Ansible modules from starting.
+ansible_python_interpreter=/Library/Developer/CommandLineTools/usr/bin/python3

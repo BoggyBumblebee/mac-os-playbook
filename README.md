@@ -14,7 +14,8 @@ This playbook installs and configures most of the software I use on my Mac for w
      xcode-select --install
      ```
 
-     If full Xcode is already installed and selected, also accept its license:
+     If you installed or selected full Xcode outside this playbook and want to
+     accept its license manually, run:
 
      ```bash
      sudo xcodebuild -license accept
@@ -56,9 +57,9 @@ This playbook installs and configures most of the software I use on my Mac for w
 This playbook preflights the selected Apple developer tools, then pre-taps and
 trusts entries from `homebrew_taps` before installing Homebrew packages,
 including during check mode. If full Xcode is installed and selected, the
-preflight also requires the Xcode license to be accepted. Homebrew still needs
-to be installed before the playbook starts so those taps can be trusted before
-package resolution.
+preflight accepts the Xcode license automatically during real runs. Homebrew
+still needs to be installed before the playbook starts so those taps can be
+trusted before package resolution.
 
 During check mode, the configured dotfiles repository is still cloned so the
 playbook can validate the dotfile symlinks and macOS settings script against a

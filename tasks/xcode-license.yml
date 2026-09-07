@@ -51,6 +51,25 @@
   check_mode: false
   become: false
 
+- name: Accept selected Xcode license before Homebrew tasks.
+  command:
+    argv:
+      - /usr/bin/xcodebuild
+      - -license
+      - accept
+  become: true
+  changed_when: true
+  when:
+    - xcode_license_check.rc != 0
+    - xcode_accept_license | default(true) | bool
+    - not ansible_check_mode
+    - >-
+      'requires Xcode' not in
+      (
+        (xcode_license_check.stderr | default('')) +
+        (xcode_license_check.stdout | default(''))
+      )
+
 - name: Require accepted Xcode license before Homebrew tasks.
   fail:
     msg: >-
@@ -60,6 +79,7 @@
       `sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer`.
   when:
     - xcode_license_check.rc != 0
+    - (not (xcode_accept_license | default(true) | bool)) or ansible_check_mode
     - >-
       'requires Xcode' not in
       (

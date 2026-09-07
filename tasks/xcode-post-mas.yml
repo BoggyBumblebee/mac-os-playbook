@@ -7,6 +7,33 @@
   check_mode: false
   become: false
 
+- name: Check full Xcode license after MAS installs.
+  command:
+    argv:
+      - /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild
+      - -license
+      - check
+  register: xcode_post_mas_license_check
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  become: false
+  when: xcode_post_mas_app.stat.exists
+
+- name: Accept full Xcode license after MAS installs.
+  command:
+    argv:
+      - /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild
+      - -license
+      - accept
+  become: true
+  changed_when: true
+  when:
+    - xcode_post_mas_app.stat.exists
+    - xcode_accept_license | default(true) | bool
+    - xcode_post_mas_license_check.rc != 0
+    - not ansible_check_mode
+
 - name: Check selected Apple developer directory after MAS installs.
   command:
     argv:
@@ -30,33 +57,6 @@
     - xcode_post_mas_app.stat.exists
     - xcode_select_full_xcode | default(true) | bool
     - xcode_post_mas_selected_path.stdout != '/Applications/Xcode.app/Contents/Developer'
-    - not ansible_check_mode
-
-- name: Check full Xcode license after MAS installs.
-  command:
-    argv:
-      - /usr/bin/xcodebuild
-      - -license
-      - check
-  register: xcode_post_mas_license_check
-  changed_when: false
-  failed_when: false
-  check_mode: false
-  become: false
-  when: xcode_post_mas_app.stat.exists
-
-- name: Accept full Xcode license after MAS installs.
-  command:
-    argv:
-      - /usr/bin/xcodebuild
-      - -license
-      - accept
-  become: true
-  changed_when: true
-  when:
-    - xcode_post_mas_app.stat.exists
-    - xcode_accept_license | default(true) | bool
-    - xcode_post_mas_license_check.rc != 0
     - not ansible_check_mode
 
 - name: Require accepted full Xcode license after MAS installs.

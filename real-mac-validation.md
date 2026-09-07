@@ -45,8 +45,8 @@ the App Store because it is listed in `mas_installed_apps`. After MAS installs
 full Xcode, the playbook selects it and accepts the Xcode license before Dock
 configuration continues.
 
-If full Xcode is already installed and selected, accept Apple's Xcode license
-before running Homebrew or the playbook:
+If full Xcode was installed or selected outside this playbook and you want to
+accept its license manually:
 
 ```bash
 sudo xcodebuild -license accept

@@ -15,8 +15,8 @@ Before starting, I completed Apple's mandatory macOS setup wizard (creating a lo
       playbook from the App Store.
     - After MAS installs full Xcode, the playbook selects it and accepts the
       Xcode license before Dock configuration continues.
-  - If full Xcode is already installed and selected, accept Apple's Xcode
-    license:
+  - If I installed or selected full Xcode outside this playbook and want to
+    accept its license manually:
 
     ```bash
     sudo xcodebuild -license accept
