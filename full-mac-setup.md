@@ -11,7 +11,10 @@ For a repeatable test pass on clean Apple hardware, follow [real-mac-validation.
 Before starting, I completed Apple's mandatory macOS setup wizard (creating a local user account, and optionally signing into my iCloud account). Once on the macOS desktop, I do the following (in order):
 
   - Install Apple's Command Line Tools: `xcode-select --install`
-    - This is only the bootstrap toolchain; full Xcode is installed later by the playbook from the App Store.
+    - This is only the bootstrap toolchain; full Xcode is installed later by the
+      playbook from the App Store.
+    - After MAS installs full Xcode, the playbook selects it and accepts the
+      Xcode license before Dock configuration continues.
   - If full Xcode is already installed and selected, accept Apple's Xcode
     license:
 

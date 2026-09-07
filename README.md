@@ -73,7 +73,8 @@ If MAS apps are configured, the playbook installs the `mas` CLI with Homebrew
 before running Mac App Store tasks, including during check mode.
 
 The Command Line Tools are only a bootstrap prerequisite. If full Xcode is listed
-in `mas_installed_apps`, the playbook still installs Xcode from the App Store and
+in `mas_installed_apps`, the playbook installs Xcode from the App Store, selects
+`/Applications/Xcode.app/Contents/Developer`, accepts the Xcode license, and
 then the Dock can reference `/Applications/Xcode.app`.
 
 Machine-specific profiles are loaded from `config/machines/<profile>.yml` after

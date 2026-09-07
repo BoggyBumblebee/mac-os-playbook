@@ -41,7 +41,9 @@ xcode-select --install
 ```
 
 This is only the bootstrap toolchain. Full Xcode is still installed later from
-the App Store because it is listed in `mas_installed_apps`.
+the App Store because it is listed in `mas_installed_apps`. After MAS installs
+full Xcode, the playbook selects it and accepts the Xcode license before Dock
+configuration continues.
 
 If full Xcode is already installed and selected, accept Apple's Xcode license
 before running Homebrew or the playbook:
